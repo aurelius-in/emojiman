@@ -15,7 +15,7 @@
 </head>
 <body>
 
-<canvas id="gameCanvas" width="800" height="600"></canvas>
+<canvas id="gameCanvas" width="800" height="1800"></canvas>
 
 <script>
   const canvas = document.getElementById('gameCanvas');
@@ -32,7 +32,7 @@
   let mouthSpeed = 0.05;
   let mouthAngle = 0;
 
-  const maze = [
+  const singleMaze = [
     '111111111111111000111111111111111',
     '100000000000001000100000000000001',
     '101111111111101000101111111111101',
@@ -45,6 +45,8 @@
     '100000000000001000100000000000001',
     '111111111111111000111111111111111'
   ];
+
+  const maze = [...singleMaze, '000000000000000000000000000000000', ...singleMaze, '000000000000000000000000000000000', ...singleMaze];
 
   canvas.addEventListener('touchstart', function(e) {
     touchStartX = e.touches[0].clientX;
