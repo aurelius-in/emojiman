@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pac-Man</title>
+  <style>
+    canvas {
+      border: 0px;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="gameCanvas" width="1080" height="2400"></canvas>
+
+<script>
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let pacmanX = 50;
+  let pacmanY = 50;
+  let pacmanRadius = 50;
+  let pacmanSpeed = 10;
+  let angle = 0;
+  let direction = 'right';
+
+  let dots = [];
+
+  // Initialize dots
+  for (let i = 0; i < 20; i++) {
+    for (let j = 0; j < 40; j++) {
+      dots.push({ x: i * 54 + 27, y: j * 60 + 30 });
+    }
+  }
+
+  // Event listener for arrow keys
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp') direction = 'up';
+    if (e.key === 'ArrowDown') direction = 'down';
+    if (e.key === 'ArrowLeft') direction = 'left';
+    if (e.key === 'ArrowRight') direction = 'right';
+  });
+
+  // Main game loop
+  function gameLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw dots
+    ctx.fillStyle = '#FFFFFF';
+    dots.forEach((dot) => {
+      ctx.beginPath();
+      ctx.arc(dot.x, dot.y, 5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Draw Pac-Man
+    ctx.fillStyle = '#FFFF00';
+    ctx.beginPath();
+    ctx.moveTo(pacmanX, pacmanY);
+    ctx.arc(pacmanX, pacmanY, pacmanRadius, angle, angle + Math.PI * 1.8);
+    ctx.lineTo(pacmanX, pacmanY);
+    ctx.fill();
+
+    // Update Pac-Man position
+    if (direction === 'up') pacmanY -= pacmanSpeed;
+    if (direction === 'down') pacmanY += pacmanSpeed;
+    if (direction === 'left') pacmanX -= pacmanSpeed;
+    if (direction === 'right') pacmanX += pacmanSpeed;
+
+    // Check for collision with dots
+    dots = dots.filter((dot) => {
+      const dx = dot.x - pacmanX;
+      const dy = dot.y - pacmanY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      return distance > pacmanRadius;
+    });
+
+    // Update angle for Pac-Man's mouth
+    angle += 0.1;
+    if (angle > Math.PI / 4) angle = 0;
+
+    requestAnimationFrame(gameLoop);
+  }
+
+  gameLoop();
+</script>
+
+</body>
+</html>
