@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>Pac-Man</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <style>
     canvas {
       border: 0px;
@@ -31,46 +30,23 @@
 
   const maze = [
     '111111111111111',
-    '100000000000001',
-    '101111111111101',
-    '100000000000001',
-    '111011111110111',
-    '000010000010000',
-    '111011111110111',
-    '100000000000001',
-    '101111111111101',
-    '100000000000001',
+    '122222222222221',
+    '121111111111121',
+    '121122222221121',
+    '111121111121111',
+    '222222222222222',
+    '111121111121111',
+    '121121111121121',
+    '121122222221121',
+    '121111111111121',
+    '122222222222221',
     '111111111111111'
   ];
 
   function checkCollision(x, y) {
-    const gridX = Math.floor(x / 32.5);
-    const gridY = Math.floor(y / 71);
+    const gridX = Math.floor(x / 25);
+    const gridY = Math.floor(y / 65);
     return maze[gridY][gridX] === '1';
-  }
-
-  canvas.addEventListener('touchstart', function(event) {
-    event.preventDefault();
-    const touchstartX = event.changedTouches[0].screenX;
-    const touchstartY = event.changedTouches[0].screenY;
-  }, false);
-
-  canvas.addEventListener('touchend', function(event) {
-    event.preventDefault();
-    const touchendX = event.changedTouches[0].screenX;
-    const touchendY = event.changedTouches[0].screenY;
-    handleGesture(touchstartX, touchstartY, touchendX, touchendY);
-  }, false);
-
-  function handleGesture(startX, startY, endX, endY) {
-    const dx = endX - startX;
-    const dy = endY - startY;
-
-    if (Math.abs(dx) > Math.abs(dy)) {
-      direction = dx > 0 ? 'right' : 'left';
-    } else {
-      direction = dy > 0 ? 'down' : 'up';
-    }
   }
 
   function gameLoop() {
@@ -80,8 +56,7 @@
       for (let x = 0; x < maze[y].length; x++) {
         if (maze[y][x] === '1') {
           ctx.fillStyle = '#0000FF';
-          ctx.fillRect(x * 32.5, y * 71, 5, 71);
-          ctx.fillRect(x * 32.5, y * 71, 32.5, 5);
+          ctx.fillRect(x * 25, y * 65, 25, 65);
         }
       }
     }
