@@ -15,7 +15,7 @@
 </head>
 <body>
 
-<canvas id="gameCanvas" width="900" height="1300"></canvas>
+<canvas id="gameCanvas" width="800" height="600"></canvas>
 
 <script>
   const canvas = document.getElementById('gameCanvas');
@@ -29,9 +29,11 @@
   let direction = 'right';
   let touchStartX = 0;
   let touchStartY = 0;
+  let mouthSpeed = 0.05;
+  let mouthAngle = 0;
 
   const maze = [
-    '111111111111111111111111111111111',
+    '111111111111111000111111111111111',
     '100000000000001000100000000000001',
     '101111111111101000101111111111101',
     '100000000000001000100000000000001',
@@ -41,7 +43,7 @@
     '100000000000001000100000000000001',
     '101111111111101000101111111111101',
     '100000000000001000100000000000001',
-    '111111111111111111111111111111111'
+    '111111111111111000111111111111111'
   ];
 
   canvas.addEventListener('touchstart', function(e) {
@@ -82,11 +84,17 @@
       }
     }
 
+    // Set angle based on direction
+    if (direction === 'up') angle = -Math.PI / 2;
+    if (direction === 'down') angle = Math.PI / 2;
+    if (direction === 'left') angle = Math.PI;
+    if (direction === 'right') angle = 0;
+
     // Draw Pac-Man
     ctx.fillStyle = '#FFFF00';
     ctx.beginPath();
     ctx.moveTo(pacmanX, pacmanY);
-    ctx.arc(pacmanX, pacmanY, pacmanRadius, angle, angle + Math.PI * 1.8);
+    ctx.arc(pacmanX, pacmanY, pacmanRadius, angle + mouthAngle, angle + Math.PI * 2 - mouthAngle);
     ctx.lineTo(pacmanX, pacmanY);
     ctx.fill();
 
@@ -103,8 +111,10 @@
       pacmanY = nextY;
     }
 
-    angle += 0.1;
-    if (angle > Math.PI / 4) angle = 0;
+    mouthAngle += mouthSpeed;
+    if (mouthAngle > Math.PI / 4 || mouthAngle < 0) {
+      mouthSpeed = -mouthSpeed;
+    }
 
     requestAnimationFrame(gameLoop);
   }
