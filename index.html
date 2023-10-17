@@ -100,14 +100,16 @@
 
     // Draw walls
     ctx.fillStyle = '#0000FF';
+
+    function drawMaze() {
     for (let y = 0; y < maze.length; y++) {
       for (let x = 0; x < maze[y].length; x++) {
         if (maze[y][x] === '1') {
-          ctx.fillRect(x * 25, y * 25, 25, 25);
+          ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
         }
       }
     }
-
+  }
     // Set angle based on direction
     if (direction === 'up') angle = -Math.PI / 2;
     if (direction === 'down') angle = Math.PI / 2;
