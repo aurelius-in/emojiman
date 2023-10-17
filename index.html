@@ -10,7 +10,7 @@
     body {
       margin: 0;
       padding: 0;
-      touch-action: manipulation; /* Prevent default zoom */
+      touch-action: manipulation;
     }
   </style>
 </head>
@@ -29,18 +29,17 @@
   let angle = 0;
   let direction = 'right';
 
-  // Maze layout (1 is wall, 0 is empty)
   const maze = [
     '111111111111111',
     '100000000000001',
     '101111111111101',
-    '101000000000101',
-    '101011111110101',
-    '100010000010001',
-    '111010111010111',
-    '000010111010000',
-    '111010111010111',
-    '100010000010001',
+    '101000001000101',
+    '101011101110101',
+    '100010001000001',
+    '111010101010111',
+    '000010101010000',
+    '111010101010111',
+    '100010001000001',
     '101011111110101',
     '101000000000101',
     '101111111111101',
@@ -48,28 +47,28 @@
     '111111111111111'
   ];
 
-  // Event listener for swipe controls
-  let touchstartX = 0;
-  let touchstartY = 0;
-  let touchendX = 0;
-  let touchendY = 0;
+  function checkCollision(x, y) {
+    const gridX = Math.floor(x / 23.4);
+    const gridY = Math.floor(y / 52);
+    return maze[gridY][gridX] === '1';
+  }
 
   canvas.addEventListener('touchstart', function(event) {
     event.preventDefault();
-    touchstartX = event.changedTouches[0].screenX;
-    touchstartY = event.changedTouches[0].screenY;
+    const touchstartX = event.changedTouches[0].screenX;
+    const touchstartY = event.changedTouches[0].screenY;
   }, false);
 
   canvas.addEventListener('touchend', function(event) {
     event.preventDefault();
-    touchendX = event.changedTouches[0].screenX;
-    touchendY = event.changedTouches[0].screenY;
-    handleGesture();
+    const touchendX = event.changedTouches[0].screenX;
+    const touchendY = event.changedTouches[0].screenY;
+    handleGesture(touchstartX, touchstartY, touchendX, touchendY);
   }, false);
 
-  function handleGesture() {
-    const dx = touchendX - touchstartX;
-    const dy = touchendY - touchstartY;
+  function handleGesture(startX, startY, endX, endY) {
+    const dx = endX - startX;
+    const dy = endY - startY;
 
     if (Math.abs(dx) > Math.abs(dy)) {
       direction = dx > 0 ? 'right' : 'left';
@@ -78,11 +77,9 @@
     }
   }
 
-  // Main game loop
   function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw maze
     for (let y = 0; y < maze.length; y++) {
       for (let x = 0; x < maze[y].length; x++) {
         if (maze[y][x] === '1') {
@@ -93,7 +90,6 @@
       }
     }
 
-    // Draw Pac-Man
     ctx.fillStyle = '#FFFF00';
     ctx.beginPath();
     ctx.moveTo(pacmanX, pacmanY);
@@ -101,13 +97,19 @@
     ctx.lineTo(pacmanX, pacmanY);
     ctx.fill();
 
-    // Update Pac-Man position
-    if (direction === 'up') pacmanY -= pacmanSpeed;
-    if (direction === 'down') pacmanY += pacmanSpeed;
-    if (direction === 'left') pacmanX -= pacmanSpeed;
-    if (direction === 'right') pacmanX += pacmanSpeed;
+    let nextX = pacmanX;
+    let nextY = pacmanY;
 
-    // Update angle for Pac-Man's mouth
+    if (direction === 'up') nextY -= pacmanSpeed;
+    if (direction === 'down') nextY += pacmanSpeed;
+    if (direction === 'left') nextX -= pacmanSpeed;
+    if (direction === 'right') nextX += pacmanSpeed;
+
+    if (!checkCollision(nextX, nextY)) {
+      pacmanX = nextX;
+      pacmanY = nextY;
+    }
+
     angle += 0.1;
     if (angle > Math.PI / 4) angle = 0;
 
