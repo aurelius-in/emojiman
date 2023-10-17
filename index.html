@@ -21,15 +21,10 @@
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  const scale = Math.min(canvas.width / 375, canvas.height / 825);
-
-  let pacmanX = 50 * scale;
-  let pacmanY = 50 * scale;
-  let pacmanRadius = 20 * scale;
-  let pacmanSpeed = 3 * scale;
+  let pacmanX = 50;
+  let pacmanY = 50;
+  let pacmanRadius = 20;
+  let pacmanSpeed = 3;
   let angle = 0;
   let direction = 'right';
   let touchStartX = 0;
@@ -40,7 +35,7 @@
   const singleMaze = [
     '111111111111111',
     '100000000000001',
-    '101111111111101',
+    '101110111011101',
     '100000000000001',
     '111011111110111',
     '000010000010000',
@@ -48,18 +43,32 @@
     '100000000000001',
     '101111111111101',
     '100000000000001',
-    '111111111111111'
+    '111111101111111'
   ];
 
   const middleMaze = [
-    '111111111111111',
+    '111111101111111',
     '100000000000001',
     '101111111111101',
+    '100000000000001',
+    '111111101111111'
+  ];
+
+  const bottomMaze = [
+    '111111101111111',
+    '100000000000001',
+    '101111111111101',
+    '100000000000001',
+    '111011111110111',
+    '000010000010000',
+    '111011111110111',
+    '100000000000001',
+    '101110111011101',
     '100000000000001',
     '111111111111111'
   ];
 
-  const maze = [...singleMaze, ...middleMaze, ...singleMaze];
+  const maze = [...singleMaze, ...middleMaze, ...bottomMaze];
 
   canvas.addEventListener('touchstart', function(e) {
     touchStartX = e.touches[0].clientX;
