@@ -54,7 +54,7 @@
     '111111111111111000111111111111111'
   ];
 
-  const maze = [...singleMaze, ...middleMaze, ...singleMaze, ...middleMaze, ...singleMaze];
+  const maze = [...singleMaze, ...middleMaze, ...singleMaze];
 
   canvas.addEventListener('touchstart', function(e) {
     touchStartX = e.touches[0].clientX;
