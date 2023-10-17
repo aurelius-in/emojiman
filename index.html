@@ -16,32 +16,36 @@
 </head>
 <body>
 
-<canvas id="gameCanvas" width="270" height="600"></canvas>
+<canvas id="gameCanvas" width="351" height="780"></canvas>
 
 <script>
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
 
-  let pacmanX = 25;
-  let pacmanY = 25;
-  let pacmanRadius = 12.5;
-  let pacmanSpeed = 5;
+  let pacmanX = 32.5;
+  let pacmanY = 32.5;
+  let pacmanRadius = 16.25;
+  let pacmanSpeed = 3;
   let angle = 0;
   let direction = 'right';
 
   // Maze layout (1 is wall, 0 is empty)
   const maze = [
-    '1111111111',
-    '1000000001',
-    '1011111101',
-    '1010000101',
-    '1010110101',
-    '1000110001',
-    '1010110101',
-    '1010000101',
-    '1011111101',
-    '1000000001',
-    '1111111111'
+    '111111111111111',
+    '100000000000001',
+    '101111111111101',
+    '101000000000101',
+    '101011111110101',
+    '100010000010001',
+    '111010111010111',
+    '000010111010000',
+    '111010111010111',
+    '100010000010001',
+    '101011111110101',
+    '101000000000101',
+    '101111111111101',
+    '100000000000001',
+    '111111111111111'
   ];
 
   // Event listener for swipe controls
@@ -83,7 +87,8 @@
       for (let x = 0; x < maze[y].length; x++) {
         if (maze[y][x] === '1') {
           ctx.fillStyle = '#0000FF';
-          ctx.fillRect(x * 27, y * 54.5, 27, 54.5);
+          ctx.fillRect(x * 23.4, y * 52, 5, 52);
+          ctx.fillRect(x * 23.4, y * 52, 23.4, 5);
         }
       }
     }
