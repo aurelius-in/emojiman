@@ -46,7 +46,15 @@
     '111111111111111000111111111111111'
   ];
 
-  const maze = [...singleMaze, '000000000000000000000000000000000', ...singleMaze, '000000000000000000000000000000000', ...singleMaze];
+  const middleMaze = [
+    '111111111111111000111111111111111',
+    '100000000000000000000000000000001',
+    '101111111111111111111111111111101',
+    '100000000000000000000000000000001',
+    '111111111111111000111111111111111'
+  ];
+
+  const maze = [...singleMaze, ...middleMaze, ...singleMaze, ...middleMaze, ...singleMaze];
 
   canvas.addEventListener('touchstart', function(e) {
     touchStartX = e.touches[0].clientX;
@@ -81,7 +89,7 @@
     for (let y = 0; y < maze.length; y++) {
       for (let x = 0; x < maze[y].length; x++) {
         if (maze[y][x] === '1') {
-          ctx.fillRect(x * 50, y * 50, 50, 50);
+          ctx.fillRect(x * 25, y * 25, 25, 25);
         }
       }
     }
