@@ -10,6 +10,7 @@
     body {
       margin: 0;
       padding: 0;
+      touch-action: manipulation; /* Prevent default zoom */
     }
   </style>
 </head>
@@ -21,68 +22,69 @@
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
 
-  let pacmanX = 50;
-  let pacmanY = 50;
+  let pacmanX = 100;
+  let pacmanY = 100;
   let pacmanRadius = 50;
   let pacmanSpeed = 10;
   let angle = 0;
   let direction = 'right';
 
-  let dots = [];
-
   // Maze layout (1 is wall, 0 is empty)
   const maze = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
-    [1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
-    [1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
-    [1, 0, 0, 0, 1, 1, 0, 0, 0, 1],
-    [1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
-    [1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
-    [1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    '1111111111',
+    '1000000001',
+    '1011111101',
+    '1010000101',
+    '1010110101',
+    '1000110001',
+    '1010110101',
+    '1010000101',
+    '1011111101',
+    '1000000001',
+    '1111111111'
   ];
 
-  // Initialize dots
-  for (let i = 0; i < 10; i++) {
-    for (let j = 0; j < 11; j++) {
-      if (maze[j][i] === 0) {
-        dots.push({ x: i * 108 + 54, y: j * 218 + 109 });
-      }
+  // Event listener for swipe controls
+  let touchstartX = 0;
+  let touchstartY = 0;
+  let touchendX = 0;
+  let touchendY = 0;
+
+  canvas.addEventListener('touchstart', function(event) {
+    touchstartX = event.changedTouches[0].screenX;
+    touchstartY = event.changedTouches[0].screenY;
+  }, false);
+
+  canvas.addEventListener('touchend', function(event) {
+    touchendX = event.changedTouches[0].screenX;
+    touchendY = event.changedTouches[0].screenY;
+    handleGesture();
+  }, false);
+
+  function handleGesture() {
+    const dx = touchendX - touchstartX;
+    const dy = touchendY - touchstartY;
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+      direction = dx > 0 ? 'right' : 'left';
+    } else {
+      direction = dy > 0 ? 'down' : 'up';
     }
   }
-
-  // Event listener for arrow keys
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowUp') direction = 'up';
-    if (e.key === 'ArrowDown') direction = 'down';
-    if (e.key === 'ArrowLeft') direction = 'left';
-    if (e.key === 'ArrowRight') direction = 'right';
-  });
 
   // Main game loop
   function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw maze walls
-    ctx.fillStyle = '#0000FF';
-    for (let i = 0; i < 10; i++) {
-      for (let j = 0; j < 11; j++) {
-        if (maze[j][i] === 1) {
-          ctx.fillRect(i * 108, j * 218, 108, 218);
+    // Draw maze
+    for (let y = 0; y < maze.length; y++) {
+      for (let x = 0; x < maze[y].length; x++) {
+        if (maze[y][x] === '1') {
+          ctx.fillStyle = '#0000FF';
+          ctx.fillRect(x * 108, y * 218, 108, 218);
         }
       }
     }
-
-    // Draw dots
-    ctx.fillStyle = '#FFFFFF';
-    dots.forEach((dot) => {
-      ctx.beginPath();
-      ctx.arc(dot.x, dot.y, 5, 0, Math.PI * 2);
-      ctx.fill();
-    });
 
     // Draw Pac-Man
     ctx.fillStyle = '#FFFF00';
@@ -97,14 +99,6 @@
     if (direction === 'down') pacmanY += pacmanSpeed;
     if (direction === 'left') pacmanX -= pacmanSpeed;
     if (direction === 'right') pacmanX += pacmanSpeed;
-
-    // Check for collision with dots
-    dots = dots.filter((dot) => {
-      const dx = dot.x - pacmanX;
-      const dy = dot.y - pacmanY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      return distance > pacmanRadius;
-    });
 
     // Update angle for Pac-Man's mouth
     angle += 0.1;
