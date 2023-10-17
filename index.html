@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Pac-Man</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <style>
     canvas {
       border: 0px;
@@ -29,10 +30,27 @@
 
   let dots = [];
 
+  // Maze layout (1 is wall, 0 is empty)
+  const maze = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+    [1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+    [1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
+    [1, 0, 0, 0, 1, 1, 0, 0, 0, 1],
+    [1, 0, 1, 0, 1, 1, 0, 1, 0, 1],
+    [1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+    [1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+  ];
+
   // Initialize dots
-  for (let i = 0; i < 20; i++) {
-    for (let j = 0; j < 40; j++) {
-      dots.push({ x: i * 54 + 27, y: j * 60 + 30 });
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 11; j++) {
+      if (maze[j][i] === 0) {
+        dots.push({ x: i * 108 + 54, y: j * 218 + 109 });
+      }
     }
   }
 
@@ -47,6 +65,16 @@
   // Main game loop
   function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw maze walls
+    ctx.fillStyle = '#0000FF';
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 11; j++) {
+        if (maze[j][i] === 1) {
+          ctx.fillRect(i * 108, j * 218, 108, 218);
+        }
+      }
+    }
 
     // Draw dots
     ctx.fillStyle = '#FFFFFF';
