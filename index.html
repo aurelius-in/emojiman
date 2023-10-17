@@ -107,6 +107,20 @@
     requestAnimationFrame(gameLoop);
   }
 
+
+    canvas.addEventListener('touchstart', function(event) {
+    event.preventDefault();
+    touchstartX = event.changedTouches[0].screenX;
+    touchstartY = event.changedTouches[0].screenY;
+  }, false);
+
+  canvas.addEventListener('touchend', function(event) {
+    event.preventDefault();
+    touchendX = event.changedTouches[0].screenX;
+    touchendY = event.changedTouches[0].screenY;
+    handleGesture();
+  }, false);
+
   gameLoop();
 </script>
 
