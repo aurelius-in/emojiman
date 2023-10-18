@@ -24,13 +24,17 @@
 <canvas id="gameCanvas" width="964" height="1533"></canvas>
 
 <script>
+  let isPowerMode = false;
     const scoreElement = document.getElementById('score');
   let score = 0;
 
-  function updateScore() {
-    score += 1;
-    scoreElement.textContent = 'Score: ' + score;
+  function updateScore(isPowerPellet = false) {
+  score += isPowerPellet ? 100 : 1;
+  scoreElement.textContent = 'Score: ' + score;
+  if (isPowerPellet) {
+    pacmanPower();
   }
+}
 
   function checkPelletCollision() {
     const gridX = Math.floor(pacmanX / cellSize);
