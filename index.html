@@ -128,6 +128,11 @@ function enemyBehavior(enemy) {
     return;
   }
 
+  // If right outside the womb room, force movement away from it
+  if (enemy.hasLeftSpawn && (nextGridY === 5 || nextGridY === 19)) {
+    enemy.direction = Math.random() < 0.5 ? 'left' : 'right';
+  }
+
   if (maze[nextGridY][nextGridX] !== '1') {
     enemy.x = nextX;
     enemy.y = nextY;
