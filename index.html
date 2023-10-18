@@ -24,17 +24,15 @@
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
 
-  const cellSize = 52.5; // 5% bigger
-  const mazeRows = 25; // Number of rows in your maze
-  let pacmanRadius = 21; // 5% bigger
+  const cellSize = 52.5;
+  const mazeRows = 25;
+  let pacmanRadius = 21;
 
-  // Adjust the canvas height to fit the entire maze
   canvas.height = (mazeRows * cellSize) + 2 * pacmanRadius;
 
-  // Center Pac-Man within an open space in the maze
   let pacmanX = 7 * cellSize + (cellSize / 2);
   let pacmanY = 12 * cellSize + (cellSize / 2);
-  let pacmanSpeed = 3.15; // 5% faster
+  let pacmanSpeed = 3.15;
   let angle = 0;
   let direction = 'right';
   let touchStartX = 0;
@@ -44,29 +42,29 @@
 
   const maze = [
     '111111111111111',
-    '100000000000001',
-    '101110111011101',
-    '100000000000001',
-    '111011121110111',
-    '000010000010000',
-    '111011111110111',
-    '100000000000001',
-    '101110111011101',
-    '100000000000001',
-    '111111101111111',
-    '100000000000001',
-    '101111000111101',
-    '100000000000001',
-    '111111101111111',
-    '100000000000001',
-    '101110111011101',
-    '100000000000001',
-    '111011111110111',
-    '000010000010000',
-    '111011121110111',
-    '100000000000001',
-    '101110111011101',
-    '100000000000001',
+    '143333333333341',
+    '131110111011131',
+    '133333333333331',
+    '131011121110131',
+    '133310000010331',
+    '131011111110131',
+    '133333333333331',
+    '131110111011131',
+    '133333333333331',
+    '131111101111131',
+    '133333333333331',
+    '141111000111141',
+    '133333333333331',
+    '131111101111131',
+    '133333333333331',
+    '131110111011131',
+    '133333333333331',
+    '131011111110131',
+    '133310000013331',
+    '131311121113131',
+    '133333333333431',
+    '131113111311131',
+    '143333333333341',
     '111111111111111'
   ];
 
@@ -107,12 +105,25 @@
   function drawMaze() {
     for (let y = 0; y < maze.length; y++) {
       for (let x = 0; x < maze[y].length; x++) {
-        if (maze[y][x] === '1') {
+        const cell = maze[y][x];
+        const xPos = x * cellSize;
+        const yPos = y * cellSize;
+        if (cell === '1') {
           ctx.fillStyle = '#0000FF';
-          ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-        } else if (maze[y][x] === '2') {
+          ctx.fillRect(xPos, yPos, cellSize, cellSize);
+        } else if (cell === '2') {
           ctx.fillStyle = '#808080';
-          ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+          ctx.fillRect(xPos, yPos, cellSize, cellSize);
+        } else if (cell === '3') {
+          ctx.fillStyle = '#FFFFFF';
+          ctx.beginPath();
+          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 5, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (cell === '4') {
+          ctx.fillStyle = '#FFFFFF';
+          ctx.beginPath();
+          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 10, 0, Math.PI * 2);
+          ctx.fill();
         }
       }
     }
@@ -121,16 +132,13 @@
   function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw walls
     drawMaze();
 
-    // Set angle based on direction
     if (direction === 'up') angle = -Math.PI / 2;
     if (direction === 'down') angle = Math.PI / 2;
     if (direction === 'left') angle = Math.PI;
     if (direction === 'right') angle = 0;
 
-    // Draw Pac-Man
     ctx.fillStyle = '#FFFF00';
     ctx.beginPath();
     ctx.moveTo(pacmanX, pacmanY);
@@ -163,3 +171,4 @@
 </script>
 </body>
 </html>
+
