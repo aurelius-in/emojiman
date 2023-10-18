@@ -1,6 +1,7 @@
 let powerModeInterval;
 let colorIndex = 0;
 const colors = ['red', 'yellow', 'blue', 'white'];
+const emojiPoints = {'\ud83d\udc80': 100, '\ud83d\udc79': 200, '\ud83d\udc7b': 300, '\ud83d\udc7d': 150, '\ud83e\uddd4\u200d\u2640\ufe0f': 250, '\ud83d\udca9': 100};
 
 function pacmanPower() {
   isPowerMode = true;
@@ -29,5 +30,19 @@ function emojiPowerBehavior(enemy) {
     // Logic to move enemy towards spawn point and through the grey square
   } else {
     enemy.speed *= 2;
+  }
+}
+
+function checkEnemyCollision() {
+  if (isPowerMode) {
+    enemies.forEach((enemy, index) => {
+      const dx = pacmanX - enemy.x;
+      const dy = pacmanY - enemy.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < pacmanRadius * 2) {
+        score += emojiPoints[enemy.emoji];
+        enemies.splice(index, 1);
+      }
+    });
   }
 }
