@@ -23,7 +23,7 @@
 <canvas id="gameCanvas" width="964" height="1533"></canvas>
 
 <script>
-    const scoreElement = document.getElementById('score');
+const scoreElement = document.getElementById('score');
   let score = 0;
 
   function updateScore() {
@@ -195,6 +195,11 @@ function enemyBehavior(enemy) {
       enemy.direction = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
     }
   }
+  // Call enemyBehavior for each enemy inside the gameLoop to update enemy movement
+  enemies.forEach(enemy => {
+    drawEnemy(enemy);
+    enemyBehavior(enemy);
+  });
 
   enemy.lastX = enemy.x;
   enemy.lastY = enemy.y;
@@ -226,7 +231,7 @@ function enemyBehavior(enemy) {
     }
   });
 
-    function checkCollision(x, y, radius, isEnemy = false) {
+function checkCollision(x, y, radius, isEnemy = false) {
     const corners = [
       { x: x - radius, y: y - radius },
       { x: x + radius, y: y - radius },
@@ -319,6 +324,9 @@ function enemyBehavior(enemy) {
     if (mouthAngle > Math.PI / 4 || mouthAngle < 0) {
       mouthSpeed = -mouthSpeed;
     }
+      // Call gameLoop() recursively for continuous game updates
+  requestAnimationFrame(gameLoop);
+}
   }
 
   gameLoop();
