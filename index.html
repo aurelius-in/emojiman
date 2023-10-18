@@ -6,8 +6,8 @@
     canvas {
       border: 0px;
       background-color: black;
-      margin-left: 42px;
-      margin-top: 50px;
+      margin-left: 62px;
+      margin-top: 90px;
     }
     body {
       margin: 0;
@@ -19,8 +19,7 @@
 </head>
 <body>
 
-<canvas id="gameCanvas" width="944" height="1493"></canvas>
-
+<canvas id="gameCanvas" width="964" height="1533"></canvas>
 <script>
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
@@ -38,10 +37,6 @@
   let mouthSpeed = 0.055;
   let mouthAngle = 0;
   let enemySpeedIncrement = 0.001;
-
-  const enemyEmojis = ['💀', '👹', '👻', '👽', '🧔‍♀️', '💩'];
-  const enemies = [];
-  let spawnToggle = true;
 
 const maze = [
     '111111111111111',
@@ -70,6 +65,10 @@ const maze = [
     '143333333333341',
     '111111111111111'
   ];
+
+  const enemyEmojis = ['💀', '👹', '👻', '👽', '🧔‍♀️', '💩'];
+  const enemies = [];
+  let spawnToggle = true;
 
   function spawnEnemy() {
     const spawnX = 7 * cellSize;
@@ -149,32 +148,45 @@ const maze = [
     }
   }
 
-  function drawEnemy(enemy) {
-    ctx.font = `${pacmanRadius * 2.3}px Arial`;
-    ctx.fillText(enemy.emoji, enemy.x - pacmanRadius, enemy.y + pacmanRadius);
-  }
-
   function enemyBehavior(enemy) {
     if (enemy.speed < enemy.maxSpeed) {
       enemy.speed += enemySpeedIncrement;
     }
 
+    const gridX = Math.floor(enemy.x / cellSize);
+    const gridY = Math.floor(enemy.y / cellSize);
+
+    const centerX = (gridX * cellSize) + cellSize / 2;
+    const centerY = (gridY * cellSize) + cellSize / 2;
+
     let nextX = enemy.x;
     let nextY = enemy.y;
 
-    if (enemy.state === 'up') {
-      nextY -= enemy.speed;
-    } else if (enemy.state === 'down') {
-      nextY += enemy.speed;
+    // Move enemy to the center of the current cell first
+    if (Math.abs(centerX - enemy.x) > 1) {
+      nextX += centerX > enemy.x ? enemy.speed : -enemy.speed;
     }
 
-    if (checkCollision(nextX, nextY, pacmanRadius, true)) {
-      enemy.state = enemy.state === 'up' ? 'down' : 'up';
-      return;
+    if (Math.abs(centerY - enemy.y) > 1) {
+      nextY += centerY > enemy.y ? enemy.speed : -enemy.speed;
     }
 
-    enemy.x = nextX;
-    enemy.y = nextY;
+    // Once at the center, decide the next direction based on Pac-Man's position
+    if (Math.abs(centerX - enemy.x) <= 1 && Math.abs(centerY - enemy.y) <= 1) {
+      const dx = pacmanX - enemy.x;
+      const dy = pacmanY - enemy.y;
+
+      if (Math.abs(dx) > Math.abs(dy)) {
+        nextX += dx > 0 ? enemy.speed : -enemy.speed;
+      } else {
+        nextY += dy > 0 ? enemy.speed : -enemy.speed;
+      }
+    }
+
+    if (!checkCollision(nextX, nextY, pacmanRadius, true)) {
+      enemy.x = nextX;
+      enemy.y = nextY;
+    }
   }
 
   function gameLoop() {
