@@ -26,13 +26,14 @@
 
   const cellSize = 52.5; // 5% bigger
   const mazeRows = 25; // Number of rows in your maze
-  let pacmanRadius = 25; // 5% bigger
+  let pacmanRadius = 21; // 5% bigger
 
   // Adjust the canvas height to fit the entire maze
   canvas.height = (mazeRows * cellSize) + 2 * pacmanRadius;
 
-  let pacmanX = canvas.width / 2;
-  let pacmanY = canvas.height / 2;
+  // Center Pac-Man within a cell
+  let pacmanX = (cellSize / 2) + pacmanRadius;
+  let pacmanY = (cellSize / 2) + pacmanRadius;
   let pacmanSpeed = 3.15; // 5% faster
   let angle = 0;
   let direction = 'right';
@@ -91,15 +92,7 @@
   function checkCollision(x, y) {
     const gridX = Math.floor((x - pacmanRadius) / cellSize);
     const gridY = Math.floor((y - pacmanRadius) / cellSize);
-    if (maze[gridY][gridX] === '1' || maze[gridY][gridX] === '2') {
-      // Move Pac-Man a few pixels away from the wall
-      if (direction === 'up') pacmanY += 5;
-      if (direction === 'down') pacmanY -= 5;
-      if (direction === 'left') pacmanX += 5;
-      if (direction === 'right') pacmanX -= 5;
-      return true;
-    }
-    return false;
+    return maze[gridY][gridX] === '1' || maze[gridY][gridX] === '2';
   }
 
   function drawMaze() {
