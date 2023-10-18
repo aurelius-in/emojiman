@@ -43,32 +43,46 @@
   let mouthAngle = 0;
 
   const maze = [
-    '111111111111111', '100000000000001', '101110111011101', '100000000000001', '111011121110111', '000010000010000', '111011111110111', '100000000000001', '101110111011101', '100000000000001', '111111101111111', '100000000000001', '101111000111101', '100000000000001', '111111101111111', '100000000000001', '101110111011101', '100000000000001', '111011111110111', '000010000010000', '111011121110111', '100000000000001', '101110111011101', '100000000000001', '111111111111111'
+    '111111111111111',
+    '100000000000001',
+    '101110111011101',
+    '100000000000001',
+    '111011121110111',
+    '000010000010000',
+    '111011111110111',
+    '100000000000001',
+    '101110111011101',
+    '100000000000001',
+    '111111101111111',
+    '100000000000001',
+    '101111000111101',
+    '100000000000001',
+    '111111101111111',
+    '100000000000001',
+    '101110111011101',
+    '100000000000001',
+    '111011111110111',
+    '000010000010000',
+    '111011121110111',
+    '100000000000001',
+    '101110111011101',
+    '100000000000001',
+    '111111111111111'
   ];
 
-  canvas.addEventListener('touchstart', function(e) {
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-  });
+  function checkCollision(x, y, radius) {
+    const corners = [
+      { x: x - radius, y: y - radius },
+      { x: x + radius, y: y - radius },
+      { x: x - radius, y: y + radius },
+      { x: x + radius, y: y + radius }
+    ];
 
-  canvas.addEventListener('touchmove', function(e) {
-    e.preventDefault();
-    const touchEndX = e.touches[0].clientX;
-    const touchEndY = e.touches[0].clientY;
-    const dx = touchEndX - touchStartX;
-    const dy = touchEndY - touchStartY;
-
-    if (Math.abs(dx) > Math.abs(dy)) {
-      direction = dx > 0 ? 'right' : 'left';
-    } else {
-      direction = dy > 0 ? 'down' : 'up';
-    }
-  });
-
-  function checkCollision(x, y) {
-    const gridX = Math.floor((x - pacmanRadius) / cellSize);
-    const gridY = Math.floor((y - pacmanRadius) / cellSize);
-    return maze[gridY][gridX] === '1' || maze[gridY][gridX] === '2';
+    return corners.some(corner => {
+      const gridX = Math.floor(corner.x / cellSize);
+      const gridY = Math.floor(corner.y / cellSize);
+      return maze[gridY][gridX] === '1' || maze[gridY][gridX] === '2';
+    });
   }
 
   function drawMaze() {
@@ -113,7 +127,7 @@
     if (direction === 'left') nextX -= pacmanSpeed;
     if (direction === 'right') nextX += pacmanSpeed;
 
-    if (!checkCollision(nextX, nextY)) {
+    if (!checkCollision(nextX, nextY, pacmanRadius)) {
       pacmanX = nextX;
       pacmanY = nextY;
     }
