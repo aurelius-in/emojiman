@@ -40,6 +40,14 @@
   let mouthSpeed = 0.05;
   let mouthAngle = 0;
 
+const enemies = [
+    { x: 100, y: 100, speed: 2, emoji: '💀' },
+    { x: 200, y: 200, speed: 2.5, emoji: '👹' },
+    { x: 300, y: 300, speed: 3, emoji: '👻' },
+    { x: 400, y: 400, speed: 3.5, emoji: '👽' },
+    { x: 500, y: 500, speed: 4, emoji: '🧔‍♀️' }
+  ];
+  
   const maze = [
     '111111111111111',
     '143333333333341',
@@ -68,6 +76,8 @@
     '111111111111111'
   ];
 
+
+  
   canvas.addEventListener('touchstart', function(e) {
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
@@ -128,11 +138,31 @@
       }
     }
   }
+function drawEnemy(enemy) {
+    ctx.font = `${pacmanRadius * 2}px Arial`;
+    ctx.fillText(enemy.emoji, enemy.x, enemy.y);
+  }
+
+  function enemyBehavior(enemy) {
+    const dx = enemy.x - pacmanX;
+    const dy = enemy.y - pacmanY;
+    if (Math.abs(dx) > Math.abs(dy)) {
+      enemy.x += dx > 0 ? -enemy.speed : enemy.speed;
+    } else {
+      enemy.y += dy > 0 ? -enemy.speed : enemy.speed;
+    }
+  }
 
   function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     drawMaze();
+    
+    // Draw and move enemies
+    enemies.forEach(enemy => {
+      drawEnemy(enemy);
+      enemyBehavior(enemy);
+    });
 
     if (direction === 'up') angle = -Math.PI / 2;
     if (direction === 'down') angle = Math.PI / 2;
