@@ -77,13 +77,12 @@ function spawnEnemy() {
 
   const spawnX = 7 * cellSize + cellSize / 2;
   const spawnY = spawnToggle ? 5 * cellSize + cellSize / 2 : 19 * cellSize + cellSize / 2;
+  const initialDirection = spawnToggle ? 'up' : 'down'; // Set initial direction based on womb room
 
   let emojiIndex;
   if (spawnToggle) {
-    // Top womb room emojis: 💀, 👹, 💩
     emojiIndex = [0, 1, 5][spawnedEnemies % 3];
   } else {
-    // Bottom womb room emojis: 👻, 👽, 🧔‍♀️
     emojiIndex = [2, 3, 4][spawnedEnemies % 3];
   }
 
@@ -95,7 +94,7 @@ function spawnEnemy() {
     maxSpeed: 2 + Math.random(),
     state: 'center',
     lastMove: Date.now(),
-    direction: 'down',
+    direction: initialDirection, // Use the initial direction
     hasLeftSpawn: false
   };
 
@@ -103,7 +102,7 @@ function spawnEnemy() {
   spawnedEnemies++;
   spawnToggle = !spawnToggle;
 }
-
+  
 function enemyBehavior(enemy) {
   const currentTime = Date.now();
   if (currentTime - enemy.lastMove < 500) return;
