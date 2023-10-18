@@ -24,9 +24,14 @@
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
 
+  const cellSize = 52.5; // 5% bigger
+  const mazeRows = 25; // Number of rows in your maze
+  let pacmanRadius = 25; // 5% bigger
+
+  // Adjust the canvas height to fit the entire maze
+  canvas.height = (mazeRows * cellSize) + 2 * pacmanRadius; // 
   let pacmanX = canvas.width / 2;
   let pacmanY = canvas.height / 2;
-  let pacmanRadius = 21; // 5% bigger
   let pacmanSpeed = 3.15; // 5% faster
   let angle = 0;
   let direction = 'right';
