@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
   <title>Pac-Man</title>
@@ -32,7 +32,7 @@
   let mouthSpeed = 0.05;
   let mouthAngle = 0;
 
-  const cellSize = 25; // Define cellSize
+  const cellSize = 25;
 
   const maze = [
     '111111111111111',
@@ -84,13 +84,17 @@
   function checkCollision(x, y) {
     const gridX = Math.floor(x / cellSize);
     const gridY = Math.floor(y / cellSize);
-    return maze[gridY][gridX] === '1';
+    return maze[gridY][gridX] === '1' || maze[gridY][gridX] === '2';
   }
 
   function drawMaze() {
     for (let y = 0; y < maze.length; y++) {
       for (let x = 0; x < maze[y].length; x++) {
         if (maze[y][x] === '1') {
+          ctx.fillStyle = '#0000FF';
+          ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+        } else if (maze[y][x] === '2') {
+          ctx.fillStyle = '#808080';
           ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
         }
       }
