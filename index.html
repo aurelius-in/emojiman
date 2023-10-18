@@ -1,3 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pac-Man</title>
+  <style>
+    canvas {
+      border: 0px;
+      background-color: black;
+      margin-left: 62px;
+      margin-top: 90px;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      touch-action: manipulation;
+      background-color: black;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="gameCanvas" width="964" height="1533"></canvas>
+<script>
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const cellSize = 57.75;
+  const mazeRows = 25;
+  let pacmanRadius = 23.1;
+  canvas.height = (mazeRows * cellSize) + 2 * pacmanRadius;
+  let pacmanX = 7 * cellSize + (cellSize / 2);
+  let pacmanY = 12 * cellSize + (cellSize / 2);
+  let pacmanSpeed = 3.465;
+  let angle = 0;
+  let direction = 'right';
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let mouthSpeed = 0.055;
+  let mouthAngle = 0;
+  let enemySpeedIncrement = 0.001;
+
+const maze = [
+    '111111111111111',
+    '143333333333341',
+    '131110111011131',
+    '131333333333131',
+    '111011121110111',
+    '133310000013331',
+    '131011111110131',
+    '131333333333131',
+    '131110111011131',
+    '133333333333331',
+    '131111101111131',
+    '133333333333331',
+    '141111000111141',
+    '133333333333331',
+    '131111101111131',
+    '133333333333331',
+    '131110111011131',
+    '131333333333131',
+    '131011111110131',
+    '133310000013331',
+    '111311121113111',
+    '131333333333131',
+    '131113111311131',
+    '143333333333341',
+    '111111111111111'
+  ];
+
+  const enemyEmojis = ['💀', '👹', '👻', '👽', '🧔‍♀️', '💩'];
+  const enemies = [];
+  let spawnToggle = true;
+
+ let spawnedEnemies = 0;
+
+function spawnEnemy() {
+  if (spawnedEnemies >= 6) return;  // Stop spawning after 6 enemies
+
+  const spawnX = 7 * cellSize + cellSize / 2;
+  const spawnY = spawnToggle ? 5 * cellSize + cellSize / 2 : 19 * cellSize + cellSize / 2;
+  const initialDirection = spawnToggle ? 'up' : 'down'; // Set initial direction based on womb room
+
+  let emojiIndex;
+  if (spawnToggle) {
+    emojiIndex = [0, 1, 5][spawnedEnemies % 3];
+  } else {
+    emojiIndex = [2, 3, 4][spawnedEnemies % 3];
+  }
+
+  const enemy = {
+    x: spawnX,
+    y: spawnY,
+    speed: 1 + Math.random(),
+    emoji: enemyEmojis[emojiIndex],
+    maxSpeed: 2 + Math.random(),
+    state: 'center',
+    lastMove: Date.now(),
+    direction: initialDirection, // Use the initial direction
+    hasLeftSpawn: false
+  };
+
+  enemies.push(enemy);
+  spawnedEnemies++;
+  spawnToggle = !spawnToggle;
+}
+
 function enemyBehavior(enemy) {
   const currentTime = Date.now();
 
@@ -71,3 +176,120 @@ function enemyBehavior(enemy) {
   enemy.lastX = enemy.x;
   enemy.lastY = enemy.y;
 }
+
+  function drawEnemy(enemy) {
+    ctx.font = `${pacmanRadius * 2.3}px Arial`;
+    ctx.fillText(enemy.emoji, enemy.x - pacmanRadius, enemy.y + pacmanRadius);
+  }
+
+  setInterval(spawnEnemy, 3000);
+
+  canvas.addEventListener('touchstart', function(e) {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  });
+
+  canvas.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    const touchEndX = e.touches[0].clientX;
+    const touchEndY = e.touches[0].clientY;
+    const dx = touchEndX - touchStartX;
+    const dy = touchEndY - touchStartY;
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+      direction = dx > 0 ? 'right' : 'left';
+    } else {
+      direction = dy > 0 ? 'down' : 'up';
+    }
+  });
+
+    function checkCollision(x, y, radius, isEnemy = false) {
+    const corners = [
+      { x: x - radius, y: y - radius },
+      { x: x + radius, y: y - radius },
+      { x: x - radius, y: y + radius },
+      { x: x + radius, y: y + radius }
+    ];
+
+    return corners.some(corner => {
+      const gridX = Math.floor(corner.x / cellSize);
+      const gridY = Math.floor(corner.y / cellSize);
+      return maze[gridY][gridX] === '1' || (maze[gridY][gridX] === '2' && !isEnemy);
+    });
+  }
+
+  function drawMaze() {
+    for (let y = 0; y < maze.length; y++) {
+      for (let x = 0; x < maze[y].length; x++) {
+        const cell = maze[y][x];
+        const xPos = x * cellSize;
+        const yPos = y * cellSize;
+        if (cell === '1') {
+          ctx.fillStyle = '#0000FF';
+          ctx.fillRect(xPos, yPos, cellSize, cellSize);
+        } else if (cell === '2') {
+          ctx.fillStyle = '#808080';
+          ctx.fillRect(xPos, yPos, cellSize, cellSize);
+        } else if (cell === '3') {
+          ctx.fillStyle = '#FFFFFF';
+          ctx.beginPath();
+          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 5.5, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (cell === '4') {
+          ctx.fillStyle = '#FFFFFF';
+          ctx.beginPath();
+          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 11, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+  }
+
+  function gameLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    drawMaze();
+
+    enemies.forEach(enemy => {
+      drawEnemy(enemy);
+      enemyBehavior(enemy);
+    });
+
+    if (direction === 'up') angle = -Math.PI / 2;
+    if (direction === 'down') angle = Math.PI / 2;
+    if (direction === 'left') angle = Math.PI;
+    if (direction === 'right') angle = 0;
+
+    ctx.fillStyle = '#FFFF00';
+    ctx.beginPath();
+    ctx.moveTo(pacmanX, pacmanY);
+    ctx.arc(pacmanX, pacmanY, pacmanRadius, angle + mouthAngle, angle + Math.PI * 2 - mouthAngle);
+    ctx.lineTo(pacmanX, pacmanY);
+    ctx.fill();
+
+    let nextX = pacmanX;
+    let nextY = pacmanY;
+
+    if (direction === 'up') nextY -= pacmanSpeed;
+    if (direction === 'down') nextY += pacmanSpeed;
+    if (direction === 'left') nextX -= pacmanSpeed;
+    if (direction === 'right') nextX += pacmanSpeed;
+
+    if (!checkCollision(nextX, nextY, pacmanRadius)) {
+      pacmanX = nextX;
+      pacmanY = nextY;
+    }
+
+    mouthAngle += mouthSpeed;
+    if (mouthAngle > Math.PI / 4 || mouthAngle < 0) {
+      mouthSpeed = -mouthSpeed;
+    }
+
+    requestAnimationFrame(gameLoop);
+  }
+
+  gameLoop();
+
+  </script>
+</body>
+</html>
