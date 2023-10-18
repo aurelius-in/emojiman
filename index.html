@@ -113,12 +113,16 @@ function enemyBehavior(enemy) {
 
   if (currentTime - enemy.lastMove < 500) return;
 
-  // Relocate emoji if smarterTime is reached while still in spawn area
-  if (currentTime > enemy.smarterTime && !enemy.hasLeftSpawn) {
-    enemy.x = 7 * cellSize + cellSize / 2;
-    enemy.y = enemy.y < canvas.height / 2 ? 6 * cellSize + cellSize / 2 : 18 * cellSize + cellSize / 2;
-    enemy.hasLeftSpawn = true;
-    enemy.direction = 'up'; // Set an initial intelligent direction
+  if (enemy.lastX === enemy.x && enemy.lastY === enemy.y && currentTime - enemy.lastMove > 1000) {
+    const possibleDirections = ['left', 'right'].filter(dir => {
+      let testX = enemy.x, testY = enemy.y;
+      if (dir === 'left') testX -= cellSize;
+      if (dir === 'right') testX += cellSize;
+      const testGridX = Math.floor(testX / cellSize);
+      const testGridY = Math.floor(testY / cellSize);
+      return maze[testGridY][testGridX] !== '1';
+    });
+    enemy.direction = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
   }
 
   let nextX = enemy.x;
