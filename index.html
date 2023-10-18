@@ -6,7 +6,8 @@
     canvas {
       border: 0px;
       background-color: black;
-      margin-left: 22px;  <!-- 10% bigger -->
+      margin-left: 42px;
+      margin-top: 50px;
     }
     body {
       margin: 0;
@@ -18,36 +19,37 @@
 </head>
 <body>
 
-<canvas id="gameCanvas" width="924" height="1443"></canvas> <!-- 10% bigger -->
+<canvas id="gameCanvas" width="944" height="1493"></canvas>
 
 <script>
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
 
-  const cellSize = 57.75;  <!-- 10% bigger -->
+  const cellSize = 57.75;
   const mazeRows = 25;
-  let pacmanRadius = 23.1;  <!-- 10% bigger -->
+  let pacmanRadius = 23.1;
 
   canvas.height = (mazeRows * cellSize) + 2 * pacmanRadius;
 
   let pacmanX = 7 * cellSize + (cellSize / 2);
   let pacmanY = 12 * cellSize + (cellSize / 2);
-  let pacmanSpeed = 3.465;  <!-- 10% faster -->
+  let pacmanSpeed = 3.465;
   let angle = 0;
   let direction = 'right';
   let touchStartX = 0;
   let touchStartY = 0;
-  let mouthSpeed = 0.055;  <!-- 10% faster -->
-  let mouthAngle = 0;
+  let mouthSpeed = 0.055;
 
-  let enemySpeedIncrement = 0.001;  <!-- Gradual speed increase -->
+  let mouthAngle = 0;
+  let enemySpeedIncrement = 0.001;
 
   const enemies = [
-    { x: 100, y: 100, speed: 1, emoji: '💀', maxSpeed: 2.2 },
-    { x: 200, y: 200, speed: 1.25, emoji: '👹', maxSpeed: 2.75 },
-    { x: 300, y: 300, speed: 1.5, emoji: '👻', maxSpeed: 3.3 },
-    { x: 400, y: 400, speed: 1.75, emoji: '👽', maxSpeed: 3.85 },
-    { x: 500, y: 500, speed: 2, emoji: '🧔‍♀️', maxSpeed: 4.4 }
+    { x: 7 * cellSize, y: 5 * cellSize, speed: 1, emoji: '💀', maxSpeed: 3 },
+    { x: 7 * cellSize, y: 5 * cellSize, speed: 1.2, emoji: '👹', maxSpeed: 2.8 },
+    { x: 7 * cellSize, y: 5 * cellSize, speed: 1.4, emoji: '👻', maxSpeed: 2.6 },
+    { x: 7 * cellSize, y: 19 * cellSize, speed: 1.6, emoji: '👽', maxSpeed: 2.4 },
+    { x: 7 * cellSize, y: 19 * cellSize, speed: 1.8, emoji: '🧔‍♀️', maxSpeed: 2.2 },
+    { x: 7 * cellSize, y: 19 * cellSize, speed: 2, emoji: '💩', maxSpeed: 2 }
   ];
 
   const maze = [
@@ -97,7 +99,7 @@
     }
   });
 
-  function checkCollision(x, y, radius) {
+  function checkCollision(x, y, radius, isEnemy = false) {
     const corners = [
       { x: x - radius, y: y - radius },
       { x: x + radius, y: y - radius },
@@ -108,7 +110,7 @@
     return corners.some(corner => {
       const gridX = Math.floor(corner.x / cellSize);
       const gridY = Math.floor(corner.y / cellSize);
-      return maze[gridY][gridX] === '1' || maze[gridY][gridX] === '2';
+      return maze[gridY][gridX] === '1' || (maze[gridY][gridX] === '2' && !isEnemy);
     });
   }
 
@@ -127,12 +129,12 @@
         } else if (cell === '3') {
           ctx.fillStyle = '#FFFFFF';
           ctx.beginPath();
-          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 5.5, 0, Math.PI * 2); <!-- 10% bigger -->
+          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 5.5, 0, Math.PI * 2);
           ctx.fill();
         } else if (cell === '4') {
           ctx.fillStyle = '#FFFFFF';
           ctx.beginPath();
-          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 11, 0, Math.PI * 2); <!-- 10% bigger -->
+          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 11, 0, Math.PI * 2);
           ctx.fill();
         }
       }
@@ -140,21 +142,30 @@
   }
 
   function drawEnemy(enemy) {
-    ctx.font = `${pacmanRadius * 2.3}px Arial`;  <!-- 15% bigger -->
-    ctx.fillText(enemy.emoji, enemy.x, enemy.y);
+    ctx.font = `${pacmanRadius * 2.3}px Arial`;
+    ctx.fillText(enemy.emoji, enemy.x - pacmanRadius, enemy.y + pacmanRadius);
   }
 
   function enemyBehavior(enemy) {
     if (enemy.speed < enemy.maxSpeed) {
-      enemy.speed += enemySpeedIncrement;  <!-- Gradual speed increase -->
+      enemy.speed += enemySpeedIncrement;
     }
+
+    let nextX = enemy.x;
+    let nextY = enemy.y;
 
     const dx = enemy.x - pacmanX;
     const dy = enemy.y - pacmanY;
+
     if (Math.abs(dx) > Math.abs(dy)) {
-      enemy.x += dx > 0 ? -enemy.speed : enemy.speed;
+      nextX += dx > 0 ? -enemy.speed : enemy.speed;
     } else {
-      enemy.y += dy > 0 ? -enemy.speed : enemy.speed;
+      nextY += dy > 0 ? -enemy.speed : enemy.speed;
+    }
+
+    if (!checkCollision(nextX, nextY, pacmanRadius, true)) {
+      enemy.x = nextX;
+      enemy.y = nextY;
     }
   }
 
