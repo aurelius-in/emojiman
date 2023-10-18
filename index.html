@@ -128,11 +128,6 @@ function enemyBehavior(enemy) {
     return;
   }
 
-  // If right outside the womb room, force movement away from it
-  if (enemy.hasLeftSpawn && (nextGridY === 5 || nextGridY === 19)) {
-    enemy.direction = Math.random() < 0.5 ? 'left' : 'right';
-  }
-
   if (maze[nextGridY][nextGridX] !== '1') {
     enemy.x = nextX;
     enemy.y = nextY;
@@ -154,8 +149,8 @@ function enemyBehavior(enemy) {
       return maze[testGridY][testGridX] !== '1';
     });
 
-    if (randomFactor) {
-      enemy.direction = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
+    if (randomFactor || possibleDirections.length === 0) {
+      enemy.direction = ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)];
     } else {
       if (Math.abs(dx) > Math.abs(dy)) {
         enemy.direction = dx > 0 ? 'right' : 'left';
@@ -164,7 +159,7 @@ function enemyBehavior(enemy) {
       }
       // Make sure the chosen direction is not a wall
       if (!possibleDirections.includes(enemy.direction)) {
-        enemy.direction = possibleDirections[0];
+        enemy.direction = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
       }
     }
   }
