@@ -268,6 +268,15 @@ function enemyBehavior(enemy) {
     }
   }
 
+  // Center Pac-Man when turning
+  function centerPacmanOnGrid() {
+    const gridX = Math.floor(pacmanX / cellSize);
+    const gridY = Math.floor(pacmanY / cellSize);
+
+    pacmanX = (gridX * cellSize) + cellSize / 2;
+    pacmanY = (gridY * cellSize) + cellSize / 2;
+  }
+
   function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -301,16 +310,15 @@ function enemyBehavior(enemy) {
     if (!checkCollision(nextX, nextY, pacmanRadius)) {
       pacmanX = nextX;
       pacmanY = nextY;
+    } else {
+      // If there's a collision, center Pac-Man on the grid
+      centerPacmanOnGrid();
     }
 
     mouthAngle += mouthSpeed;
     if (mouthAngle > Math.PI / 4 || mouthAngle < 0) {
       mouthSpeed = -mouthSpeed;
     }
-
-    requestAnimationFrame(gameLoop);
-    checkPelletCollision();
-  }
 
   gameLoop();
 
