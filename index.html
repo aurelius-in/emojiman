@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Pac-Man</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     canvas {
       border: 0px;
@@ -18,9 +19,27 @@
   </style>
 </head>
 <body>
-
+<div id="score" style="position: absolute; top: 10px; left: 10px; color: white; font-size: 30px; font-family: 'Press Start 2P', cursive;"></div>
 <canvas id="gameCanvas" width="964" height="1533"></canvas>
+
 <script>
+    const scoreElement = document.getElementById('score');
+  let score = 0;
+
+  function updateScore() {
+    score += 1;
+    scoreElement.textContent = 'Score: ' + score;
+  }
+
+  function checkPelletCollision() {
+    const gridX = Math.floor(pacmanX / cellSize);
+    const gridY = Math.floor(pacmanY / cellSize);
+
+    if (maze[gridY][gridX] === '3' || maze[gridY][gridX] === '4') {
+      maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
+      updateScore();
+    }
+  }
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
   const cellSize = 57.75;
@@ -290,6 +309,7 @@ function enemyBehavior(enemy) {
     }
 
     requestAnimationFrame(gameLoop);
+    checkPelletCollision();
   }
 
   gameLoop();
