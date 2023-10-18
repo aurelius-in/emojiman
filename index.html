@@ -147,7 +147,12 @@ const maze = [
       }
     }
   }
-
+  
+function drawEnemy(enemy) {
+    ctx.font = `${pacmanRadius * 2.3}px Arial`;
+    ctx.fillText(enemy.emoji, enemy.x - pacmanRadius, enemy.y + pacmanRadius);
+  }
+  
   function enemyBehavior(enemy) {
     if (enemy.speed < enemy.maxSpeed) {
       enemy.speed += enemySpeedIncrement;
