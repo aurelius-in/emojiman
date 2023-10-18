@@ -154,13 +154,31 @@
     let nextX = enemy.x;
     let nextY = enemy.y;
 
-    const dx = enemy.x - pacmanX;
-    const dy = enemy.y - pacmanY;
+    const dx = pacmanX - enemy.x;
+    const dy = pacmanY - enemy.y;
 
-    if (Math.abs(dx) > Math.abs(dy)) {
-      nextX += dx > 0 ? -enemy.speed : enemy.speed;
-    } else {
-      nextY += dy > 0 ? -enemy.speed : enemy.speed;
+    const gridX = Math.floor(enemy.x / cellSize);
+    const gridY = Math.floor(enemy.y / cellSize);
+
+    const centerX = (gridX * cellSize) + cellSize / 2;
+    const centerY = (gridY * cellSize) + cellSize / 2;
+
+    // Move enemy to the center of the current cell first
+    if (Math.abs(centerX - enemy.x) > 1) {
+      nextX += centerX > enemy.x ? enemy.speed : -enemy.speed;
+    }
+
+    if (Math.abs(centerY - enemy.y) > 1) {
+      nextY += centerY > enemy.y ? enemy.speed : -enemy.speed;
+    }
+
+    // Once at the center, decide the next direction
+    if (Math.abs(centerX - enemy.x) <= 1 && Math.abs(centerY - enemy.y) <= 1) {
+      if (Math.abs(dx) > Math.abs(dy)) {
+        nextX += dx > 0 ? enemy.speed : -enemy.speed;
+      } else {
+        nextY += dy > 0 ? enemy.speed : -enemy.speed;
+      }
     }
 
     if (!checkCollision(nextX, nextY, pacmanRadius, true)) {
