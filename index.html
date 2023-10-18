@@ -6,7 +6,7 @@
     canvas {
       border: 0px;
       background-color: black;
-      margin-left: 20px;
+      margin-left: 22px;  <!-- 10% bigger -->
     }
     body {
       margin: 0;
@@ -18,36 +18,38 @@
 </head>
 <body>
 
-<canvas id="gameCanvas" width="840" height="1312"></canvas>
+<canvas id="gameCanvas" width="924" height="1443"></canvas> <!-- 10% bigger -->
 
 <script>
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
 
-  const cellSize = 52.5;
+  const cellSize = 57.75;  <!-- 10% bigger -->
   const mazeRows = 25;
-  let pacmanRadius = 21;
+  let pacmanRadius = 23.1;  <!-- 10% bigger -->
 
   canvas.height = (mazeRows * cellSize) + 2 * pacmanRadius;
 
   let pacmanX = 7 * cellSize + (cellSize / 2);
   let pacmanY = 12 * cellSize + (cellSize / 2);
-  let pacmanSpeed = 3.15;
+  let pacmanSpeed = 3.465;  <!-- 10% faster -->
   let angle = 0;
   let direction = 'right';
   let touchStartX = 0;
   let touchStartY = 0;
-  let mouthSpeed = 0.05;
+  let mouthSpeed = 0.055;  <!-- 10% faster -->
   let mouthAngle = 0;
 
-const enemies = [
-    { x: 100, y: 100, speed: 2, emoji: '💀' },
-    { x: 200, y: 200, speed: 2.5, emoji: '👹' },
-    { x: 300, y: 300, speed: 3, emoji: '👻' },
-    { x: 400, y: 400, speed: 3.5, emoji: '👽' },
-    { x: 500, y: 500, speed: 4, emoji: '🧔‍♀️' }
+  let enemySpeedIncrement = 0.001;  <!-- Gradual speed increase -->
+
+  const enemies = [
+    { x: 100, y: 100, speed: 1, emoji: '💀', maxSpeed: 2.2 },
+    { x: 200, y: 200, speed: 1.25, emoji: '👹', maxSpeed: 2.75 },
+    { x: 300, y: 300, speed: 1.5, emoji: '👻', maxSpeed: 3.3 },
+    { x: 400, y: 400, speed: 1.75, emoji: '👽', maxSpeed: 3.85 },
+    { x: 500, y: 500, speed: 2, emoji: '🧔‍♀️', maxSpeed: 4.4 }
   ];
-  
+
   const maze = [
     '111111111111111',
     '143333333333341',
@@ -76,8 +78,6 @@ const enemies = [
     '111111111111111'
   ];
 
-
-  
   canvas.addEventListener('touchstart', function(e) {
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
@@ -127,23 +127,28 @@ const enemies = [
         } else if (cell === '3') {
           ctx.fillStyle = '#FFFFFF';
           ctx.beginPath();
-          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 5, 0, Math.PI * 2);
+          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 5.5, 0, Math.PI * 2); <!-- 10% bigger -->
           ctx.fill();
         } else if (cell === '4') {
           ctx.fillStyle = '#FFFFFF';
           ctx.beginPath();
-          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 10, 0, Math.PI * 2);
+          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 11, 0, Math.PI * 2); <!-- 10% bigger -->
           ctx.fill();
         }
       }
     }
   }
-function drawEnemy(enemy) {
-    ctx.font = `${pacmanRadius * 2}px Arial`;
+
+  function drawEnemy(enemy) {
+    ctx.font = `${pacmanRadius * 2.3}px Arial`;  <!-- 15% bigger -->
     ctx.fillText(enemy.emoji, enemy.x, enemy.y);
   }
 
   function enemyBehavior(enemy) {
+    if (enemy.speed < enemy.maxSpeed) {
+      enemy.speed += enemySpeedIncrement;  <!-- Gradual speed increase -->
+    }
+
     const dx = enemy.x - pacmanX;
     const dy = enemy.y - pacmanY;
     if (Math.abs(dx) > Math.abs(dy)) {
@@ -157,8 +162,7 @@ function drawEnemy(enemy) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     drawMaze();
-    
-    // Draw and move enemies
+
     enemies.forEach(enemy => {
       drawEnemy(enemy);
       enemyBehavior(enemy);
@@ -201,4 +205,3 @@ function drawEnemy(enemy) {
 </script>
 </body>
 </html>
-
