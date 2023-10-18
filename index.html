@@ -106,7 +106,6 @@ function spawnEnemy() {
 function enemyBehavior(enemy) {
   const currentTime = Date.now();
 
-  // Initialize smarterTime if not set
   if (!enemy.smarterTime) {
     const emojiIndex = enemyEmojis.indexOf(enemy.emoji);
     enemy.smarterTime = currentTime + (emojiIndex + 1 + 3) * 1000; // 1-based index + 3 seconds, converted to milliseconds
@@ -114,7 +113,6 @@ function enemyBehavior(enemy) {
 
   if (currentTime - enemy.lastMove < 500) return;
 
-  // Check if the enemy has been stuck for more than 1000ms
   if (enemy.lastX === enemy.x && enemy.lastY === enemy.y && currentTime - enemy.lastMove > 1000) {
     const possibleDirections = ['left', 'right'].filter(dir => {
       let testX = enemy.x, testY = enemy.y;
@@ -146,38 +144,36 @@ function enemyBehavior(enemy) {
     return;
   }
 
-  if (maze[nextGridY][nextGridX] !== '1') {
+  if (maze[nextGridY][nextGridX] !== '1' || currentTime > enemy.smarterTime) {
     enemy.x = nextX;
     enemy.y = nextY;
     enemy.lastMove = currentTime;
     enemy.hasLeftSpawn = true;
-  } else {
-    let dx = pacmanX - enemy.x;
-    let dy = pacmanY - enemy.y;
-    let randomFactor = currentTime < enemy.smarterTime ? Math.random() < 0.2 : Math.random() < 0.1; // Smarter after time
+  }
 
-    const possibleDirections = ['up', 'down', 'left', 'right'].filter(dir => {
-      let testX = enemy.x, testY = enemy.y;
-      if (dir === 'up') testY -= cellSize;
-      if (dir === 'down') testY += cellSize;
-      if (dir === 'left') testX -= cellSize;
-      if (dir === 'right') testX += cellSize;
-      const testGridX = Math.floor(testX / cellSize);
-      const testGridY = Math.floor(testY / cellSize);
-      return maze[testGridY][testGridX] !== '1';
-    });
+  let dx = pacmanX - enemy.x;
+  let dy = pacmanY - enemy.y;
+  let randomFactor = currentTime < enemy.smarterTime ? Math.random() < 0.2 : Math.random() < 0.1;
 
-    if (randomFactor || possibleDirections.length === 0) {
-      enemy.direction = ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)];
+  const possibleDirections = ['up', 'down', 'left', 'right'].filter(dir => {
+    let testX = enemy.x, testY = enemy.y;
+    if (dir === 'up') testY -= cellSize;
+    if (dir === 'down') testY += cellSize;
+    if (dir === 'left') testX -= cellSize;
+    if (dir === 'right') testX += cellSize;
+    const testGridX = Math.floor(testX / cellSize);
+    const testGridY = Math.floor(testY / cellSize);
+    return maze[testGridY][testGridX] !== '1';
+  });
+
+  if (currentTime > enemy.smarterTime || randomFactor || possibleDirections.length === 0) {
+    if (Math.abs(dx) > Math.abs(dy)) {
+      enemy.direction = dx > 0 ? 'right' : 'left';
     } else {
-      if (Math.abs(dx) > Math.abs(dy)) {
-        enemy.direction = dx > 0 ? 'right' : 'left';
-      } else {
-        enemy.direction = dy > 0 ? 'down' : 'up';
-      }
-      if (!possibleDirections.includes(enemy.direction)) {
-        enemy.direction = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
-      }
+      enemy.direction = dy > 0 ? 'down' : 'up';
+    }
+    if (!possibleDirections.includes(enemy.direction)) {
+      enemy.direction = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
     }
   }
 
