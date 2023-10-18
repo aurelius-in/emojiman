@@ -98,14 +98,6 @@ function enemyBehavior(enemy) {
   let nextX = enemy.x;
   let nextY = enemy.y;
 
-  if (!enemy.hasLeftSpawn) {
-    if (enemy.y < canvas.height / 2) {
-      enemy.direction = 'down'; // Force the enemy to move down if spawned at the top
-    } else {
-      enemy.direction = 'up'; // Force the enemy to move up if spawned at the bottom
-    }
-  }
-
   if (enemy.direction === 'up') nextY -= cellSize;
   if (enemy.direction === 'down') nextY += cellSize;
   if (enemy.direction === 'left') nextX -= cellSize;
@@ -118,16 +110,21 @@ function enemyBehavior(enemy) {
     enemy.x = nextX;
     enemy.y = nextY;
     enemy.lastMove = currentTime;
-    enemy.hasLeftSpawn = true;
   } else {
-    // Change direction based on Pac-Man's position
+    // Change direction based on Pac-Man's position or randomly
     let dx = pacmanX - enemy.x;
     let dy = pacmanY - enemy.y;
+    let randomFactor = Math.random() < 0.2; // 1/5 chance to move randomly
 
-    if (Math.abs(dx) > Math.abs(dy)) {
-      enemy.direction = dx > 0 ? 'right' : 'left';
+    if (randomFactor) {
+      const possibleDirections = ['up', 'down', 'left', 'right'];
+      enemy.direction = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
     } else {
-      enemy.direction = dy > 0 ? 'down' : 'up';
+      if (Math.abs(dx) > Math.abs(dy)) {
+        enemy.direction = dx > 0 ? 'right' : 'left';
+      } else {
+        enemy.direction = dy > 0 ? 'down' : 'up';
+      }
     }
   }
 }
