@@ -70,7 +70,11 @@ const maze = [
   const enemies = [];
   let spawnToggle = true;
 
-function spawnEnemy() {
+ let spawnedEnemies = 0;
+
+  function spawnEnemy() {
+    if (spawnedEnemies >= 6) return;
+
     const spawnX = 7 * cellSize + cellSize / 2;
     const spawnY = spawnToggle ? 5 * cellSize + cellSize / 2 : 19 * cellSize + cellSize / 2;
     const enemy = {
@@ -79,29 +83,35 @@ function spawnEnemy() {
       speed: 1 + Math.random(),
       emoji: enemyEmojis[Math.floor(Math.random() * enemyEmojis.length)],
       maxSpeed: 2 + Math.random(),
-      state: 'center',
-      lastMove: Date.now(),
-      direction: 'down',
-      hasLeftSpawn: false
+      state: 'spawn',
+      direction: 'down'
     };
     enemies.push(enemy);
     spawnToggle = !spawnToggle;
+    spawnedEnemies++;
   }
 
   function enemyBehavior(enemy) {
     let nextX = enemy.x;
     let nextY = enemy.y;
 
-    if (enemy.direction === 'up') nextY -= enemy.speed;
-    if (enemy.direction === 'down') nextY += enemy.speed;
-    if (enemy.direction === 'left') nextX -= enemy.speed;
-    if (enemy.direction === 'right') nextX += enemy.speed;
+    if (enemy.state === 'spawn') {
+      if (enemy.y < 6 * cellSize || enemy.y > 18 * cellSize) {
+        enemy.state = 'chase';
+      } else {
+        nextY += cellSize; // Move towards the grey square
+      }
+    } else {
+      if (enemy.direction === 'up') nextY -= cellSize;
+      if (enemy.direction === 'down') nextY += cellSize;
+      if (enemy.direction === 'left') nextX -= cellSize;
+      if (enemy.direction === 'right') nextX += cellSize;
+    }
 
     const nextGridX = Math.floor(nextX / cellSize);
     const nextGridY = Math.floor(nextY / cellSize);
 
     if (maze[nextGridY][nextGridX] === '1') {
-      // Change direction based on Pac-Man's position
       let dx = pacmanX - enemy.x;
       let dy = pacmanY - enemy.y;
 
@@ -110,15 +120,6 @@ function spawnEnemy() {
       } else {
         enemy.direction = dy > 0 ? 'down' : 'up';
       }
-      return;
-    }
-
-    if (maze[nextGridY][nextGridX] === '2' && !enemy.hasLeftSpawn) {
-      enemy.hasLeftSpawn = true;
-    }
-
-    if (maze[nextGridY][nextGridX] === '2' && enemy.hasLeftSpawn) {
-      enemy.direction = 'down';
       return;
     }
 
@@ -131,7 +132,7 @@ function spawnEnemy() {
     ctx.fillText(enemy.emoji, enemy.x - pacmanRadius, enemy.y + pacmanRadius);
   }
 
-  setInterval(spawnEnemy, 2000);
+  setInterval(spawnEnemy, 3000);
 
   canvas.addEventListener('touchstart', function(e) {
     touchStartX = e.touches[0].clientX;
