@@ -40,9 +40,12 @@
     const gridX = Math.floor(pacmanX / cellSize);
     const gridY = Math.floor(pacmanY / cellSize);
 
-    if (maze[gridY][gridX] === '3' || maze[gridY][gridX] === '4') {
+    if (maze[gridY][gridX] === '4') {
+    updateScore(true);
+  }
+    if (maze[gridY][gridX] === '3') {
       maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
-      updateScore();
+      updateScore(false);
     }
   }
   const canvas = document.getElementById('gameCanvas');
