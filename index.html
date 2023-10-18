@@ -73,21 +73,34 @@ const maze = [
  let spawnedEnemies = 0;
 
 function spawnEnemy() {
+  if (spawnedEnemies >= 6) return;  // Stop spawning after 6 enemies
+
   const spawnX = 7 * cellSize + cellSize / 2;
   const spawnY = spawnToggle ? 5 * cellSize + cellSize / 2 : 19 * cellSize + cellSize / 2;
-  const initialDirection = spawnToggle ? 'down' : 'up';
+
+  let emojiIndex;
+  if (spawnToggle) {
+    // Top womb room emojis: 💀, 👹, 💩
+    emojiIndex = [0, 1, 5][spawnedEnemies % 3];
+  } else {
+    // Bottom womb room emojis: 👻, 👽, 🧔‍♀️
+    emojiIndex = [2, 3, 4][spawnedEnemies % 3];
+  }
+
   const enemy = {
     x: spawnX,
     y: spawnY,
     speed: 1 + Math.random(),
-    emoji: enemyEmojis[Math.floor(Math.random() * enemyEmojis.length)],
+    emoji: enemyEmojis[emojiIndex],
     maxSpeed: 2 + Math.random(),
     state: 'center',
     lastMove: Date.now(),
-    direction: initialDirection,  // Set initial direction based on spawn location
-    hasLeftSpawn: false  // New flag
+    direction: 'down',
+    hasLeftSpawn: false
   };
+
   enemies.push(enemy);
+  spawnedEnemies++;
   spawnToggle = !spawnToggle;
 }
 
