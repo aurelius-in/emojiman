@@ -29,7 +29,8 @@
   let pacmanRadius = 25; // 5% bigger
 
   // Adjust the canvas height to fit the entire maze
-  canvas.height = (mazeRows * cellSize) + 2 * pacmanRadius; // 
+  canvas.height = (mazeRows * cellSize) + 2 * pacmanRadius;
+
   let pacmanX = canvas.width / 2;
   let pacmanY = canvas.height / 2;
   let pacmanSpeed = 3.15; // 5% faster
@@ -39,8 +40,6 @@
   let touchStartY = 0;
   let mouthSpeed = 0.05;
   let mouthAngle = 0;
-
-  const cellSize = 52.5; // 5% bigger
 
   const maze = [
     '111111111111111',
@@ -90,9 +89,17 @@
   });
 
   function checkCollision(x, y) {
-    const gridX = Math.floor((x - 21) / cellSize);
-    const gridY = Math.floor((y - 21) / cellSize);
-    return maze[gridY][gridX] === '1' || maze[gridY][gridX] === '2';
+    const gridX = Math.floor((x - pacmanRadius) / cellSize);
+    const gridY = Math.floor((y - pacmanRadius) / cellSize);
+    if (maze[gridY][gridX] === '1' || maze[gridY][gridX] === '2') {
+      // Move Pac-Man a few pixels away from the wall
+      if (direction === 'up') pacmanY += 5;
+      if (direction === 'down') pacmanY -= 5;
+      if (direction === 'left') pacmanX += 5;
+      if (direction === 'right') pacmanX -= 5;
+      return true;
+    }
+    return false;
   }
 
   function drawMaze() {
@@ -100,10 +107,10 @@
       for (let x = 0; x < maze[y].length; x++) {
         if (maze[y][x] === '1') {
           ctx.fillStyle = '#0000FF';
-          ctx.fillRect(x * cellSize + 21, y * cellSize + 21, cellSize, cellSize);
+          ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
         } else if (maze[y][x] === '2') {
           ctx.fillStyle = '#808080';
-          ctx.fillRect(x * cellSize + 21, y * cellSize + 21, cellSize, cellSize);
+          ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
         }
       }
     }
