@@ -105,8 +105,16 @@ function spawnEnemy() {
 
 function enemyBehavior(enemy) {
   const currentTime = Date.now();
+
+  // Initialize smarterTime if not set
+  if (!enemy.smarterTime) {
+    const emojiIndex = enemyEmojis.indexOf(enemy.emoji);
+    enemy.smarterTime = currentTime + (emojiIndex + 1 + 3) * 1000; // 1-based index + 3 seconds, converted to milliseconds
+  }
+
   if (currentTime - enemy.lastMove < 500) return;
 
+  // Check if the enemy has been stuck for more than 1000ms
   if (enemy.lastX === enemy.x && enemy.lastY === enemy.y && currentTime - enemy.lastMove > 1000) {
     const possibleDirections = ['left', 'right'].filter(dir => {
       let testX = enemy.x, testY = enemy.y;
@@ -122,10 +130,10 @@ function enemyBehavior(enemy) {
   let nextX = enemy.x;
   let nextY = enemy.y;
 
-  if (enemy.direction === 'up') nextY -= enemy.speed;
-  if (enemy.direction === 'down') nextY += enemy.speed;
-  if (enemy.direction === 'left') nextX -= enemy.speed;
-  if (enemy.direction === 'right') nextX += enemy.speed;
+  if (enemy.direction === 'up') nextY -= cellSize;
+  if (enemy.direction === 'down') nextY += cellSize;
+  if (enemy.direction === 'left') nextX -= cellSize;
+  if (enemy.direction === 'right') nextX += cellSize;
 
   const nextGridX = Math.floor(nextX / cellSize);
   const nextGridY = Math.floor(nextY / cellSize);
@@ -146,6 +154,7 @@ function enemyBehavior(enemy) {
   } else {
     let dx = pacmanX - enemy.x;
     let dy = pacmanY - enemy.y;
+    let randomFactor = currentTime < enemy.smarterTime ? Math.random() < 0.2 : Math.random() < 0.1; // Smarter after time
 
     const possibleDirections = ['up', 'down', 'left', 'right'].filter(dir => {
       let testX = enemy.x, testY = enemy.y;
@@ -158,28 +167,17 @@ function enemyBehavior(enemy) {
       return maze[testGridY][testGridX] !== '1';
     });
 
-    if (enemy.emoji === '💩' || enemy.emoji === '👽') {
-      // Simplified A* logic for poop and alien emoji
+    if (randomFactor || possibleDirections.length === 0) {
+      enemy.direction = ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)];
+    } else {
       if (Math.abs(dx) > Math.abs(dy)) {
         enemy.direction = dx > 0 ? 'right' : 'left';
       } else {
         enemy.direction = dy > 0 ? 'down' : 'up';
       }
-    } else {
-      // Bias towards Pac-Man for other emojis
-      if (Math.random() < 0.8) {
-        if (Math.abs(dx) > Math.abs(dy)) {
-          enemy.direction = dx > 0 ? 'right' : 'left';
-        } else {
-          enemy.direction = dy > 0 ? 'down' : 'up';
-        }
-      } else {
+      if (!possibleDirections.includes(enemy.direction)) {
         enemy.direction = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
       }
-    }
-
-    if (!possibleDirections.includes(enemy.direction)) {
-      enemy.direction = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
     }
   }
 
