@@ -6,17 +6,19 @@
     canvas {
       border: 0px;
       background-color: black;
+      margin-left: 20px;
     }
     body {
       margin: 0;
       padding: 0;
       touch-action: manipulation;
+      background-color: black;
     }
   </style>
 </head>
 <body>
 
-<canvas id="gameCanvas" width="800" height="1250"></canvas>
+<canvas id="gameCanvas" width="840" height="1312"></canvas>
 
 <script>
   const canvas = document.getElementById('gameCanvas');
@@ -24,8 +26,8 @@
 
   let pacmanX = canvas.width / 2;
   let pacmanY = canvas.height / 2;
-  let pacmanRadius = 20;
-  let pacmanSpeed = 3;
+  let pacmanRadius = 21; // 5% bigger
+  let pacmanSpeed = 3.15; // 5% faster
   let angle = 0;
   let direction = 'right';
   let touchStartX = 0;
@@ -33,7 +35,7 @@
   let mouthSpeed = 0.05;
   let mouthAngle = 0;
 
-  const cellSize = 50; // 2x the original size
+  const cellSize = 52.5; // 5% bigger
 
   const maze = [
     '111111111111111',
@@ -83,8 +85,8 @@
   });
 
   function checkCollision(x, y) {
-    const gridX = Math.floor((x - 20) / cellSize);
-    const gridY = Math.floor((y - 20) / cellSize);
+    const gridX = Math.floor((x - 21) / cellSize);
+    const gridY = Math.floor((y - 21) / cellSize);
     return maze[gridY][gridX] === '1' || maze[gridY][gridX] === '2';
   }
 
@@ -93,10 +95,10 @@
       for (let x = 0; x < maze[y].length; x++) {
         if (maze[y][x] === '1') {
           ctx.fillStyle = '#0000FF';
-          ctx.fillRect(x * cellSize + 20, y * cellSize + 20, cellSize, cellSize);
+          ctx.fillRect(x * cellSize + 21, y * cellSize + 21, cellSize, cellSize);
         } else if (maze[y][x] === '2') {
           ctx.fillStyle = '#808080';
-          ctx.fillRect(x * cellSize + 20, y * cellSize + 20, cellSize, cellSize);
+          ctx.fillRect(x * cellSize + 21, y * cellSize + 21, cellSize, cellSize);
         }
       }
     }
@@ -106,7 +108,7 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw walls
-    drawMaze(); // Call the function to draw the maze
+    drawMaze();
 
     // Set angle based on direction
     if (direction === 'up') angle = -Math.PI / 2;
@@ -145,6 +147,5 @@
 
   gameLoop();
 </script>
-
 </body>
 </html>
