@@ -105,7 +105,7 @@ function spawnEnemy() {
   
 function enemyBehavior(enemy) {
   const currentTime = Date.now();
-  if (currentTime - enemy.lastMove < 500) return;
+  if (currentTime - enemy.lastMove < 200) return; // Reduced time to 200ms for quicker updates
 
   let nextX = enemy.x;
   let nextY = enemy.y;
@@ -118,26 +118,12 @@ function enemyBehavior(enemy) {
   const nextGridX = Math.floor(nextX / cellSize);
   const nextGridY = Math.floor(nextY / cellSize);
 
-  // If inside a womb room, move towards the grey square
-  if (!enemy.hasLeftSpawn && maze[nextGridY][nextGridX] === '2') {
-    enemy.direction = enemy.y < canvas.height / 2 ? 'up' : 'down';
-  }
-
-  // Prevent re-entry into the womb room
-  if (enemy.hasLeftSpawn && maze[nextGridY][nextGridX] === '2') {
-    return;
-  }
-
   if (maze[nextGridY][nextGridX] !== '1') {
     enemy.x = nextX;
     enemy.y = nextY;
     enemy.lastMove = currentTime;
     enemy.hasLeftSpawn = true;
   } else {
-    let dx = pacmanX - enemy.x;
-    let dy = pacmanY - enemy.y;
-    let randomFactor = Math.random() < 0.2; // 1/5 chance to move randomly
-
     const possibleDirections = ['up', 'down', 'left', 'right'].filter(dir => {
       let testX = enemy.x, testY = enemy.y;
       if (dir === 'up') testY -= cellSize;
@@ -149,19 +135,21 @@ function enemyBehavior(enemy) {
       return maze[testGridY][testGridX] !== '1';
     });
 
-    if (randomFactor || possibleDirections.length === 0) {
-      enemy.direction = ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)];
-    } else {
+    if (possibleDirections.length > 0) {
+      let dx = pacmanX - enemy.x;
+      let dy = pacmanY - enemy.y;
       if (Math.abs(dx) > Math.abs(dy)) {
         enemy.direction = dx > 0 ? 'right' : 'left';
       } else {
         enemy.direction = dy > 0 ? 'down' : 'up';
       }
-      // Make sure the chosen direction is not a wall
       if (!possibleDirections.includes(enemy.direction)) {
         enemy.direction = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
       }
+    } else {
+      enemy.direction = ['up', 'down', 'left', 'right'][Math.floor(Math.random() * 4)];
     }
+    enemy.lastMove = currentTime;
   }
 }
 
