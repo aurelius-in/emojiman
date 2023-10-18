@@ -125,22 +125,17 @@
     if (direction === 'down') nextY += pacmanSpeed;
     if (direction === 'left') nextX -= pacmanSpeed;
     if (direction === 'right') nextX += pacmanSpeed;
-
     if (!checkCollision(nextX, nextY)) {
       pacmanX = nextX;
       pacmanY = nextY;
     }
-
     mouthAngle += mouthSpeed;
     if (mouthAngle > Math.PI / 4 || mouthAngle < 0) {
       mouthSpeed = -mouthSpeed;
     }
-
     requestAnimationFrame(gameLoop);
   }
-
   gameLoop();
 </script>
-
 </body>
 </html>
