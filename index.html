@@ -32,43 +32,35 @@
   let mouthSpeed = 0.05;
   let mouthAngle = 0;
 
-  const singleMaze = [
+  const cellSize = 25; // Define cellSize
+
+  const maze = [
     '111111111111111',
+    '100000000000001',
+    '101110111011101',
+    '100000000000001',
+    '111011101110111',
+    '000010000010000',
+    '111011111110111',
+    '100000000000001',
+    '101111111111101',
+    '100000000000001',
+    '111111101111111',
+    '100000000000001',
+    '101111111111101',
+    '100000000000001',
+    '111111101111111',
     '100000000000001',
     '101110111011101',
     '100000000000001',
     '111011111110111',
     '000010000010000',
-    '111011111110111',
-    '100000000000001',
-    '101111111111101',
-    '100000000000001',
-    '111111101111111'
-  ];
-
-  const middleMaze = [
-    '111111101111111',
-    '100000000000001',
-    '101111111111101',
-    '100000000000001',
-    '111111101111111'
-  ];
-
-  const bottomMaze = [
-    '111111101111111',
-    '100000000000001',
-    '101111111111101',
-    '100000000000001',
-    '111011111110111',
-    '000010000010000',
-    '111011111110111',
+    '111011101110111',
     '100000000000001',
     '101110111011101',
     '100000000000001',
     '111111111111111'
   ];
-
-  const maze = [...singleMaze, ...middleMaze, ...bottomMaze];
 
   canvas.addEventListener('touchstart', function(e) {
     touchStartX = e.touches[0].clientX;
@@ -90,18 +82,12 @@
   });
 
   function checkCollision(x, y) {
-    const gridX = Math.floor(x / 25);
-    const gridY = Math.floor(y / 25);
+    const gridX = Math.floor(x / cellSize);
+    const gridY = Math.floor(y / cellSize);
     return maze[gridY][gridX] === '1';
   }
 
-  function gameLoop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw walls
-    ctx.fillStyle = '#0000FF';
-
-    function drawMaze() {
+  function drawMaze() {
     for (let y = 0; y < maze.length; y++) {
       for (let x = 0; x < maze[y].length; x++) {
         if (maze[y][x] === '1') {
@@ -110,6 +96,14 @@
       }
     }
   }
+
+  function gameLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw walls
+    ctx.fillStyle = '#0000FF';
+    drawMaze(); // Call the function to draw the maze
+
     // Set angle based on direction
     if (direction === 'up') angle = -Math.PI / 2;
     if (direction === 'down') angle = Math.PI / 2;
