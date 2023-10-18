@@ -136,12 +136,9 @@ function enemyBehavior(enemy) {
   const nextGridX = Math.floor(nextX / cellSize);
   const nextGridY = Math.floor(nextY / cellSize);
 
-  if (!enemy.hasLeftSpawn && maze[nextGridY][nextGridX] === '2') {
-    enemy.direction = enemy.y < canvas.height / 2 ? 'up' : 'down';
-  }
-
-  if (enemy.hasLeftSpawn && maze[nextGridY][nextGridX] === '2') {
-    return;
+  // If inside a womb room, force move towards the exit
+  if (maze[nextGridY][nextGridX] === '2') {
+    enemy.direction = enemy.y < canvas.height / 2 ? 'down' : 'up';
   }
 
   if (maze[nextGridY][nextGridX] !== '1' || currentTime > enemy.smarterTime) {
