@@ -70,7 +70,7 @@ const maze = [
   const enemies = [];
   let spawnToggle = true;
 
-   function spawnEnemy() {
+function spawnEnemy() {
     const spawnX = 7 * cellSize + cellSize / 2;
     const spawnY = spawnToggle ? 5 * cellSize + cellSize / 2 : 19 * cellSize + cellSize / 2;
     const enemy = {
@@ -81,23 +81,21 @@ const maze = [
       maxSpeed: 2 + Math.random(),
       state: 'center',
       lastMove: Date.now(),
-      direction: 'down'
+      direction: 'down',
+      hasLeftSpawn: false
     };
     enemies.push(enemy);
     spawnToggle = !spawnToggle;
   }
 
   function enemyBehavior(enemy) {
-    const currentTime = Date.now();
-    if (currentTime - enemy.lastMove < 500) return;
-
     let nextX = enemy.x;
     let nextY = enemy.y;
 
-    if (enemy.direction === 'up') nextY -= cellSize;
-    if (enemy.direction === 'down') nextY += cellSize;
-    if (enemy.direction === 'left') nextX -= cellSize;
-    if (enemy.direction === 'right') nextX += cellSize;
+    if (enemy.direction === 'up') nextY -= enemy.speed;
+    if (enemy.direction === 'down') nextY += enemy.speed;
+    if (enemy.direction === 'left') nextX -= enemy.speed;
+    if (enemy.direction === 'right') nextX += enemy.speed;
 
     const nextGridX = Math.floor(nextX / cellSize);
     const nextGridY = Math.floor(nextY / cellSize);
@@ -115,9 +113,17 @@ const maze = [
       return;
     }
 
+    if (maze[nextGridY][nextGridX] === '2' && !enemy.hasLeftSpawn) {
+      enemy.hasLeftSpawn = true;
+    }
+
+    if (maze[nextGridY][nextGridX] === '2' && enemy.hasLeftSpawn) {
+      enemy.direction = 'down';
+      return;
+    }
+
     enemy.x = nextX;
     enemy.y = nextY;
-    enemy.lastMove = currentTime;
   }
 
   function drawEnemy(enemy) {
