@@ -24,13 +24,10 @@
 <script>
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
-
   const cellSize = 57.75;
   const mazeRows = 25;
   let pacmanRadius = 23.1;
-
   canvas.height = (mazeRows * cellSize) + 2 * pacmanRadius;
-
   let pacmanX = 7 * cellSize + (cellSize / 2);
   let pacmanY = 12 * cellSize + (cellSize / 2);
   let pacmanSpeed = 3.465;
@@ -39,17 +36,16 @@
   let touchStartX = 0;
   let touchStartY = 0;
   let mouthSpeed = 0.055;
-
   let mouthAngle = 0;
   let enemySpeedIncrement = 0.001;
 
   const enemies = [
-    { x: 7 * cellSize, y: 5 * cellSize, speed: 1, emoji: '💀', maxSpeed: 3 },
-    { x: 7 * cellSize, y: 5 * cellSize, speed: 1.2, emoji: '👹', maxSpeed: 2.8 },
-    { x: 7 * cellSize, y: 5 * cellSize, speed: 1.4, emoji: '👻', maxSpeed: 2.6 },
-    { x: 7 * cellSize, y: 19 * cellSize, speed: 1.6, emoji: '👽', maxSpeed: 2.4 },
-    { x: 7 * cellSize, y: 19 * cellSize, speed: 1.8, emoji: '🧔‍♀️', maxSpeed: 2.2 },
-    { x: 7 * cellSize, y: 19 * cellSize, speed: 2, emoji: '💩', maxSpeed: 2 }
+    { x: 7 * cellSize, y: 5 * cellSize, speed: 1, emoji: '💀', maxSpeed: 3, state: 'chase' },
+    { x: 7 * cellSize, y: 5 * cellSize, speed: 1.2, emoji: '👹', maxSpeed: 2.8, state: 'chase' },
+    { x: 7 * cellSize, y: 5 * cellSize, speed: 1.4, emoji: '👻', maxSpeed: 2.6, state: 'chase' },
+    { x: 7 * cellSize, y: 19 * cellSize, speed: 1.6, emoji: '👽', maxSpeed: 2.4, state: 'chase' },
+    { x: 7 * cellSize, y: 19 * cellSize, speed: 1.8, emoji: '🧔‍♀️', maxSpeed: 2.2, state: 'chase' },
+    { x: 7 * cellSize, y: 19 * cellSize, speed: 2, emoji: '💩', maxSpeed: 2, state: 'chase' }
   ];
 
   const maze = [
@@ -174,10 +170,20 @@
 
     // Once at the center, decide the next direction
     if (Math.abs(centerX - enemy.x) <= 1 && Math.abs(centerY - enemy.y) <= 1) {
-      if (Math.abs(dx) > Math.abs(dy)) {
-        nextX += dx > 0 ? enemy.speed : -enemy.speed;
+      if (enemy.state === 'chase') {
+        if (Math.abs(dx) > Math.abs(dy)) {
+          nextX += dx > 0 ? enemy.speed : -enemy.speed;
+        } else {
+          nextY += dy > 0 ? enemy.speed : -enemy.speed;
+        }
+      } else if (enemy.state === 'flee') {
+        if (Math.abs(dx) > Math.abs(dy)) {
+          nextX += dx < 0 ? enemy.speed : -enemy.speed;
+        } else {
+          nextY += dy < 0 ? enemy.speed : -enemy.speed;
+        }
       } else {
-        nextY += dy > 0 ? enemy.speed : -enemy.speed;
+        nextY += dy < 0 ? enemy.speed : -enemy.speed;
       }
     }
 
@@ -185,6 +191,24 @@
       enemy.x = nextX;
       enemy.y = nextY;
     }
+  }
+
+  function updateEnemyState() {
+    let state = 'chase';
+    setInterval(() => {
+      if (state === 'chase') {
+        state = 'random';
+        enemies.forEach(enemy => enemy.state = 'random');
+        setTimeout(() => {
+          state = 'flee';
+          enemies.forEach(enemy => enemy.state = 'flee');
+          setTimeout(() => {
+            state = 'chase';
+            enemies.forEach(enemy => enemy.state = 'chase');
+          }, 2000);
+        }, 3000);
+      }
+    }, 9000);
   }
 
   function gameLoop() {
@@ -216,20 +240,17 @@
     if (direction === 'down') nextY += pacmanSpeed;
     if (direction === 'left') nextX -= pacmanSpeed;
     if (direction === 'right') nextX += pacmanSpeed;
-
     if (!checkCollision(nextX, nextY, pacmanRadius)) {
       pacmanX = nextX;
       pacmanY = nextY;
     }
-
     mouthAngle += mouthSpeed;
     if (mouthAngle > Math.PI / 4 || mouthAngle < 0) {
       mouthSpeed = -mouthSpeed;
     }
-
     requestAnimationFrame(gameLoop);
   }
-
+  updateEnemyState();
   gameLoop();
 </script>
 </body>
