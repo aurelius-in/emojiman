@@ -327,6 +327,21 @@ function enemyBehavior(enemy) {
     if (mouthAngle > Math.PI / 4 || mouthAngle < 0) {
       mouthSpeed = -mouthSpeed;
     }
+if (isPowerMode) {
+  ctx.fillStyle = colors[colorIndex];
+  enemies.forEach(enemy => {
+    drawEmojiPower(ctx, enemy);
+    emojiPowerBehavior(enemy);
+  });
+  checkEnemyCollision();
+} else {
+  ctx.fillStyle = '#FFFF00';
+  enemies.forEach(enemy => {
+    drawEnemy(enemy);
+    enemyBehavior(enemy);
+  });
+}
+    
 requestAnimationFrame(gameLoop);
     checkPelletCollision();
   }
