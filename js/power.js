@@ -11,12 +11,13 @@ function pacmanPower() {
   }, 500);
 
   setTimeout(() => {
-  isPowerMode = false;
-  clearInterval(powerModeInterval);
-  enemies.forEach(enemy => {
-    enemy.speed *= 2;
-  });
-}, 15000);
+    isPowerMode = false;
+    clearInterval(powerModeInterval);
+    enemies.forEach(enemy => {
+      enemy.speed *= 2;
+    });
+  }, 15000);
+} // Missing closing brace added here
 
 function drawEmojiPower(ctx, enemy) {
   if (isPowerMode) {
@@ -28,17 +29,14 @@ function drawEmojiPower(ctx, enemy) {
 
 function emojiPowerBehavior(enemy) {
   if (isPowerMode) {
-  let dx = pacmanX - enemy.x;
-  let dy = pacmanY - enemy.y;
-  if (Math.abs(dx) > Math.abs(dy)) {
-    enemy.direction = dx > 0 ? 'left' : 'right';
-  } else {
-    enemy.direction = dy > 0 ? 'up' : 'down';
-  }
-}
-  if (isPowerMode) {
     enemy.speed /= 2;
-    // Logic to move enemy towards spawn point and through the grey square
+    let dx = pacmanX - enemy.x;
+    let dy = pacmanY - enemy.y;
+    if (Math.abs(dx) > Math.abs(dy)) {
+      enemy.direction = dx > 0 ? 'left' : 'right';
+    } else {
+      enemy.direction = dy > 0 ? 'up' : 'down';
+    }
   } else {
     enemy.speed *= 2;
   }
