@@ -1,9 +1,9 @@
 let powerModeInterval;
 let colorIndex = 0;
-const colors = ['red', 'yellow', 'blue', 'white'];
-const emojiPoints = {'\ud83d\udc80': 100, '\ud83d\udc79': 200, '\ud83d\udc7b': 300, '\ud83d\udc7d': 150, '\ud83e\uddd4\u200d\u2640\ufe0f': 250, '\ud83d\udca9': 100};
+export const colors = ['red', 'yellow', 'blue', 'white'];
+export const emojiPoints = {'\ud83d\udc80': 100, '\ud83d\udc79': 200, '\ud83d\udc7b': 300, '\ud83d\udc7d': 150, '\ud83e\uddd4\u200d\u2640\ufe0f': 250, '\ud83d\udca9': 100};
 
-function pacmanPower() {
+export function pacmanPower() {
   isPowerMode = true;
   clearInterval(powerModeInterval);
   powerModeInterval = setInterval(() => {
@@ -19,7 +19,7 @@ function pacmanPower() {
   }, 15000);
 } // Missing closing brace added here
 
-function drawEmojiPower(ctx, enemy) {
+export function drawEmojiPower(ctx, enemy) {
   if (isPowerMode) {
     ctx.globalAlpha = 0.5 + 0.5 * Math.sin(Date.now() / 500);
   }
@@ -27,7 +27,7 @@ function drawEmojiPower(ctx, enemy) {
   ctx.globalAlpha = 1;
 }
 
-function emojiPowerBehavior(enemy) {
+export function emojiPowerBehavior(enemy) {
   if (isPowerMode) {
     enemy.speed /= 2;
     let dx = pacmanX - enemy.x;
@@ -42,7 +42,7 @@ function emojiPowerBehavior(enemy) {
   }
 }
 
-function checkEnemyCollision() {
+export function checkEnemyCollision() {
   if (isPowerMode) {
     enemies.forEach((enemy, index) => {
       const dx = pacmanX - enemy.x;
