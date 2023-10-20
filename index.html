@@ -94,17 +94,20 @@ function checkEnemyCollision() {
 }
 
   function checkPelletCollision() {
-    const gridX = Math.floor(pacmanX / cellSize);
-    const gridY = Math.floor(pacmanY / cellSize);
+  const gridX = Math.floor(pacmanX / cellSize);
+  const gridY = Math.floor(pacmanY / cellSize);
 
-    if (maze[gridY][gridX] === '4') {
+  if (maze[gridY][gridX] === '4') {
+    maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
     updateScore(true);
+    pacmanPower();
   }
-    if (maze[gridY][gridX] === '3') {
-      maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
-      updateScore(false);
-    }
+  if (maze[gridY][gridX] === '3') {
+    maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
+    updateScore(false);
   }
+}
+
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
   const cellSize = 57.75;
@@ -343,65 +346,60 @@ function enemyBehavior(enemy) {
   }
 
   function gameLoop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    drawMaze();
+  drawMaze();
 
+  if (isPowerMode) {
+    ctx.fillStyle = colors[colorIndex];
+    enemies.forEach(enemy => {
+      drawEmojiPower(ctx, enemy);
+      emojiPowerBehavior(enemy);
+    });
+    checkEnemyCollision();
+  } else {
+    ctx.fillStyle = '#FFFF00';
     enemies.forEach(enemy => {
       drawEnemy(enemy);
       enemyBehavior(enemy);
     });
-
-    if (direction === 'up') angle = -Math.PI / 2;
-    if (direction === 'down') angle = Math.PI / 2;
-    if (direction === 'left') angle = Math.PI;
-    if (direction === 'right') angle = 0;
-
-    ctx.fillStyle = '#FFFF00';
-    ctx.beginPath();
-    ctx.moveTo(pacmanX, pacmanY);
-    ctx.arc(pacmanX, pacmanY, pacmanRadius, angle + mouthAngle, angle + Math.PI * 2 - mouthAngle);
-    ctx.lineTo(pacmanX, pacmanY);
-    ctx.fill();
-
-    let nextX = pacmanX;
-    let nextY = pacmanY;
-
-    if (direction === 'up') nextY -= pacmanSpeed;
-    if (direction === 'down') nextY += pacmanSpeed;
-    if (direction === 'left') nextX -= pacmanSpeed;
-    if (direction === 'right') nextX += pacmanSpeed;
-
-    if (!checkCollision(nextX, nextY, pacmanRadius)) {
-      pacmanX = nextX;
-      pacmanY = nextY;
-    } else {
-      // If there's a collision, center Pac-Man on the grid
-      centerPacmanOnGrid();
-    }
-
-    mouthAngle += mouthSpeed;
-    if (mouthAngle > Math.PI / 4 || mouthAngle < 0) {
-      mouthSpeed = -mouthSpeed;
-    }
-if (isPowerMode) {
-  ctx.fillStyle = colors[colorIndex];
-  enemies.forEach(enemy => {
-    drawEmojiPower(ctx, enemy);
-    emojiPowerBehavior(enemy);
-  });
-  checkEnemyCollision();
-} else {
-  ctx.fillStyle = '#FFFF00';
-  enemies.forEach(enemy => {
-    drawEnemy(enemy);
-    enemyBehavior(enemy);
-  });
-}
-    
-requestAnimationFrame(gameLoop);
-    checkPelletCollision();
   }
+
+  if (direction === 'up') angle = -Math.PI / 2;
+  if (direction === 'down') angle = Math.PI / 2;
+  if (direction === 'left') angle = Math.PI;
+  if (direction === 'right') angle = 0;
+
+  ctx.fillStyle = '#FFFF00';
+  ctx.beginPath();
+  ctx.moveTo(pacmanX, pacmanY);
+  ctx.arc(pacmanX, pacmanY, pacmanRadius, angle + mouthAngle, angle + Math.PI * 2 - mouthAngle);
+  ctx.lineTo(pacmanX, pacmanY);
+  ctx.fill();
+
+  let nextX = pacmanX;
+  let nextY = pacmanY;
+
+  if (direction === 'up') nextY -= pacmanSpeed;
+  if (direction === 'down') nextY += pacmanSpeed;
+  if (direction === 'left') nextX -= pacmanSpeed;
+  if (direction === 'right') nextX += pacmanSpeed;
+
+  if (!checkCollision(nextX, nextY, pacmanRadius)) {
+    pacmanX = nextX;
+    pacmanY = nextY;
+  } else {
+    centerPacmanOnGrid();
+  }
+
+  mouthAngle += mouthSpeed;
+  if (mouthAngle > Math.PI / 4 || mouthAngle < 0) {
+    mouthSpeed = -mouthSpeed;
+  }
+
+  checkPelletCollision();
+  requestAnimationFrame(gameLoop);
+}
 
   gameLoop();
 
