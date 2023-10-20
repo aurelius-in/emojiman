@@ -350,13 +350,18 @@ function gameLoop() {
   drawMaze();
 
   if (isPowerMode) {
+    // Make Pac-Man blink and change colors
+    ctx.globalAlpha = Math.abs(Math.sin(Date.now() / 500)) * 0.85 + 0.15;
     ctx.fillStyle = colors[colorIndex];
+
+    // Make enemies blink
     enemies.forEach(enemy => {
       drawEmojiPower(ctx, enemy);
       emojiPowerBehavior(enemy);
     });
     checkEnemyCollision();
   } else {
+    ctx.globalAlpha = 1.0;
     ctx.fillStyle = '#FFFF00';
     enemies.forEach(enemy => {
       drawEnemy(enemy);
@@ -369,7 +374,6 @@ function gameLoop() {
   if (direction === 'left') angle = Math.PI;
   if (direction === 'right') angle = 0;
 
-  ctx.fillStyle = '#FFFF00';
   ctx.beginPath();
   ctx.moveTo(pacmanX, pacmanY);
   ctx.arc(pacmanX, pacmanY, pacmanRadius, angle + mouthAngle, angle + Math.PI * 2 - mouthAngle);
@@ -396,10 +400,10 @@ function gameLoop() {
     mouthSpeed = -mouthSpeed;
   }
 
+  ctx.globalAlpha = 1.0; // Reset alpha to default
   checkPelletCollision();
   requestAnimationFrame(gameLoop);
 }
-
 
   gameLoop();
 
