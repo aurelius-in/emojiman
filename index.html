@@ -80,10 +80,6 @@ function checkEnemyCollision() {
     });
   }
 }
-  
-  let isPowerMode = false;
-    const scoreElement = document.getElementById('score');
-  let score = 0;
 
   function updateScore(isPowerPellet = false) {
   score += isPowerPellet ? 100 : 1;
@@ -92,21 +88,10 @@ function checkEnemyCollision() {
     pacmanPower();
   }
 }
-
-  function checkPelletCollision() {
-  const gridX = Math.floor(pacmanX / cellSize);
-  const gridY = Math.floor(pacmanY / cellSize);
-
-  if (maze[gridY][gridX] === '4') {
-    maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
-    updateScore(true);
-    pacmanPower();
-  }
-  if (maze[gridY][gridX] === '3') {
-    maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
-    updateScore(false);
-  }
-}
+  
+  let isPowerMode = false;
+    const scoreElement = document.getElementById('score');
+  let score = 0;
 
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
@@ -345,7 +330,22 @@ function enemyBehavior(enemy) {
     pacmanY = (gridY * cellSize) + cellSize / 2;
   }
 
-  function gameLoop() {
+  function checkPelletCollision() {
+  const gridX = Math.floor(pacmanX / cellSize);
+  const gridY = Math.floor(pacmanY / cellSize);
+
+  if (maze[gridY][gridX] === '4') {
+    maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
+    updateScore(true);
+    pacmanPower();
+  }
+  if (maze[gridY][gridX] === '3') {
+    maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
+    updateScore(false);
+  }
+}
+
+function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   drawMaze();
@@ -400,6 +400,7 @@ function enemyBehavior(enemy) {
   checkPelletCollision();
   requestAnimationFrame(gameLoop);
 }
+
 
   gameLoop();
 
