@@ -35,8 +35,7 @@ function drawEmojiPower(ctx, enemy) {
 }
 
 function drawPowerModeElements() {
-  // Make Pac-Man and enemies blink
-  ctx.globalAlpha = 1.0; // Set alpha to 1
+  ctx.globalAlpha = 1.0; // Reset alpha to 1
   ctx.fillStyle = '#FFFF00';  // Explicitly set Pacman's color to yellow
   enemies.forEach(enemy => {
     drawEmojiPower(ctx, enemy);
