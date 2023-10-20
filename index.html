@@ -58,15 +58,27 @@ function drawEmojiPower(ctx, enemy, index) {
 function emojiPowerBehavior(enemy) {
   if (isPowerMode) {
     enemy.speed /= 2;
-    let dx = pacmanX - enemy.x;
-    let dy = pacmanY - enemy.y;
+    let dx = enemy.spawnX - enemy.x;
+    let dy = enemy.spawnY - enemy.y;
     if (Math.abs(dx) > Math.abs(dy)) {
-      enemy.direction = dx > 0 ? 'left' : 'right';
+      enemy.direction = dx > 0 ? 'right' : 'left';
     } else {
-      enemy.direction = dy > 0 ? 'up' : 'down';
+      enemy.direction = dy > 0 ? 'down' : 'up';
     }
+    enemy.isInSpawn = true;
   } else {
     enemy.speed *= 2;
+    if (enemy.isInSpawn) {
+      // Logic to make them leave the spawn area
+      let dx = pacmanX - enemy.x;
+      let dy = pacmanY - enemy.y;
+      if (Math.abs(dx) > Math.abs(dy)) {
+        enemy.direction = dx > 0 ? 'right' : 'left';
+      } else {
+        enemy.direction = dy > 0 ? 'down' : 'up';
+      }
+      enemy.isInSpawn = false;  // Reset the flag
+    }
   }
 }
 
@@ -188,6 +200,9 @@ function spawnEnemy() {
     lastMove: Date.now(),
     direction: initialDirection, // Use the initial direction
     hasLeftSpawn: false
+    spawnX: spawnX,
+    spawnY: spawnY,
+    isInSpawn: true  // New flag
   };
 
   enemies.push(enemy);
@@ -299,7 +314,7 @@ function enemyBehavior(enemy) {
     }
   });
 
-    function checkCollision(x, y, radius, isEnemy = false) {
+  function checkCollision(x, y, radius, isEnemy = false) {
     const corners = [
       { x: x - radius, y: y - radius },
       { x: x + radius, y: y - radius },
