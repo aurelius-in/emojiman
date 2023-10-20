@@ -346,8 +346,10 @@ function enemyBehavior(enemy) {
 
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   drawMaze();
+  drawPellets();
+  drawPowerPellets();
+  drawPacman(pacman.x, pacman.y, pacman.angle);
 
   if (isPowerMode) {
     // Make Pac-Man blink and change colors
@@ -369,44 +371,15 @@ function gameLoop() {
     });
   }
 
-  if (direction === 'up') angle = -Math.PI / 2;
-  if (direction === 'down') angle = Math.PI / 2;
-  if (direction === 'left') angle = Math.PI;
-  if (direction === 'right') angle = 0;
-
-  ctx.beginPath();
-  ctx.moveTo(pacmanX, pacmanY);
-  ctx.arc(pacmanX, pacmanY, pacmanRadius, angle + mouthAngle, angle + Math.PI * 2 - mouthAngle);
-  ctx.lineTo(pacmanX, pacmanY);
-  ctx.fill();
-
-  let nextX = pacmanX;
-  let nextY = pacmanY;
-
-  if (direction === 'up') nextY -= pacmanSpeed;
-  if (direction === 'down') nextY += pacmanSpeed;
-  if (direction === 'left') nextX -= pacmanSpeed;
-  if (direction === 'right') nextX += pacmanSpeed;
-
-  if (!checkCollision(nextX, nextY, pacmanRadius)) {
-    pacmanX = nextX;
-    pacmanY = nextY;
-  } else {
-    centerPacmanOnGrid();
-  }
-
-  mouthAngle += mouthSpeed;
-  if (mouthAngle > Math.PI / 4 || mouthAngle < 0) {
-    mouthSpeed = -mouthSpeed;
-  }
-
-  ctx.globalAlpha = 1.0; // Reset alpha to default
   checkPelletCollision();
+  checkPowerPelletCollision();
+  checkEnemyCollision();
+  updatePacman();
+  updateScore();
   requestAnimationFrame(gameLoop);
+  ctx.globalAlpha = 1.0; // Reset alpha to default
 }
-
   gameLoop();
-
   </script>
 </body>
 </html>
