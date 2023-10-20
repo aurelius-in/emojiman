@@ -189,21 +189,20 @@ function spawnEnemy() {
   } else {
     emojiIndex = [2, 3, 4][spawnedEnemies % 3];
   }
-
   const enemy = {
-    x: spawnX,
-    y: spawnY,
-    speed: 1 + Math.random(),
-    emoji: enemyEmojis[emojiIndex],
-    maxSpeed: 2 + Math.random(),
-    state: 'center',
-    lastMove: Date.now(),
-    direction: initialDirection, // Use the initial direction
-    hasLeftSpawn: false
-    spawnX: spawnX,
-    spawnY: spawnY,
-    isInSpawn: true  // New flag
-  };
+  x: spawnX,
+  y: spawnY,
+  speed: 1 + Math.random(),
+  emoji: enemyEmojis[emojiIndex],
+  maxSpeed: 2 + Math.random(),
+  state: 'center',
+  lastMove: Date.now(),
+  direction: initialDirection, // Use the initial direction
+  hasLeftSpawn: false,  // Missing comma added here
+  spawnX: spawnX,
+  spawnY: spawnY,
+  isInSpawn: true  // New flag
+};
 
   enemies.push(enemy);
   spawnedEnemies++;
