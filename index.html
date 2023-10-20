@@ -16,11 +16,30 @@
       touch-action: manipulation;
       background-color: black;
     }
+    #joystick {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+#joystick button {
+  width: 50px;
+  height: 50px;
+  margin: 5px;
+}
   </style>
 </head>
 <body>
 <div id="score" style="position: absolute; top: 10px; left: 10px; color: white; font-size: 30px; font-family: 'Press Start 2P', cursive;"></div>
 <canvas id="gameCanvas" width="964" height="1533"></canvas>
+<div id="joystick">
+  <button id="up">Up</button>
+  <button id="left">Left</button>
+  <button id="right">Right</button>
+  <button id="down">Down</button>
+</div>
+
 
 <script>
 let powerModeInterval;
@@ -452,6 +471,22 @@ if (isPowerMode) {
   checkCherryCollision();
 }
 
+document.getElementById('up').addEventListener('click', () => {
+  pacmanDirection = 'up';
+});
+
+document.getElementById('down').addEventListener('click', () => {
+  pacmanDirection = 'down';
+});
+
+document.getElementById('left').addEventListener('click', () => {
+  pacmanDirection = 'left';
+});
+
+document.getElementById('right').addEventListener('click', () => {
+  pacmanDirection = 'right';
+});
+  
   gameLoop();
 
   </script>
