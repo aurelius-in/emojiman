@@ -486,7 +486,24 @@ document.getElementById('left').addEventListener('click', () => {
 document.getElementById('right').addEventListener('click', () => {
   pacmanDirection = 'right';
 });
-  
+
+document.addEventListener('keydown', function(event) {
+  switch (event.key) {
+    case 'ArrowUp':
+      pacmanDirection = 'up';
+      break;
+    case 'ArrowDown':
+      pacmanDirection = 'down';
+      break;
+    case 'ArrowLeft':
+      pacmanDirection = 'left';
+      break;
+    case 'ArrowRight':
+      pacmanDirection = 'right';
+      break;
+  }
+});
+
   gameLoop();
 
   </script>
