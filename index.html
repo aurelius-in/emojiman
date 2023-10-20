@@ -27,7 +27,8 @@ let powerModeInterval;
 let colorIndex = 0;
 const colors = ['red', 'yellow', 'blue', 'white'];
 const emojiPoints = {'\ud83d\udc80': 100, '\ud83d\udc79': 200, '\ud83d\udc7b': 300, '\ud83d\udc7d': 150, '\ud83e\uddd4\u200d\u2640\ufe0f': 250, '\ud83d\udca9': 100};
-
+let cherry = null;
+  
 function pacmanPower() {
   isPowerMode = true;
   clearInterval(powerModeInterval);
@@ -364,6 +365,27 @@ function enemyBehavior(enemy) {
     pacmanY = (gridY * cellSize) + cellSize / 2;
   }
 
+function checkCherryCollision() {
+  if (cherry) {
+    const dx = pacmanX - cherry.x;
+    const dy = pacmanY - cherry.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < pacmanRadius * 2) {
+      score += 1000;
+      scoreElement.textContent = 'Score: ' + score;
+      cherry = null;
+    }
+  }
+}
+
+  
+function drawCherry() {
+  if (cherry) {
+    ctx.font = `${pacmanRadius * 2.3}px Arial`;
+    ctx.fillText('🍒', cherry.x - pacmanRadius, cherry.y + pacmanRadius);
+  }
+}
+  
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -415,9 +437,11 @@ if (isPowerMode) {
   if (mouthAngle > Math.PI / 4 || mouthAngle < 0) {
     mouthSpeed = -mouthSpeed;
   }
-
+  
   checkPelletCollision();
   requestAnimationFrame(gameLoop);
+  drawCherry();
+  checkCherryCollision();
 }
 
   gameLoop();
