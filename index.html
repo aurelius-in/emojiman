@@ -503,6 +503,23 @@ document.getElementById('right').addEventListener('click', () => {
   pacmanDirection = 'right';
 });
 
+document.getElementById('up').addEventListener('touchstart', () => {
+  pacmanDirection = 'up';
+});
+
+document.getElementById('down').addEventListener('touchstart', () => {
+  pacmanDirection = 'down';
+});
+
+document.getElementById('left').addEventListener('touchstart', () => {
+  pacmanDirection = 'left';
+});
+
+document.getElementById('right').addEventListener('touchstart', () => {
+  pacmanDirection = 'right';
+});
+
+
 document.addEventListener('keydown', function(event) {
   switch (event.key) {
     case 'ArrowUp':
