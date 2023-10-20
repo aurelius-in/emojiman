@@ -44,11 +44,14 @@ function pacmanPower() {
   }, 15000);
 } // Missing closing brace added here
 
-function drawEmojiPower(ctx, enemy) {
+function drawEmojiPower(ctx, enemy, index) {
   if (isPowerMode) {
     ctx.globalAlpha = 0.5 + 0.5 * Math.sin(Date.now() / 500);
+    ctx.font = `${pacmanRadius * 2.3}px Arial`;
+    ctx.fillText(powerEmojis[index], enemy.x - pacmanRadius, enemy.y + pacmanRadius);
+  } else {
+    drawEnemy(ctx, enemy);
   }
-  drawEnemy(ctx, enemy);
   ctx.globalAlpha = 1;
 }
 
@@ -154,6 +157,8 @@ const maze = [
   ];
 
   const enemyEmojis = ['💀', '👹', '👻', '👽', '🤖', '💩'];
+  const powerEmojis = ['☠️', '🥺', '😱', '🤢', '🥶', '😵‍💫'];
+
   const enemies = [];
   let spawnToggle = true;
 
@@ -345,15 +350,15 @@ function enemyBehavior(enemy) {
     pacmanY = (gridY * cellSize) + cellSize / 2;
   }
 
-  function gameLoop() {
+function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   drawMaze();
 
-  if (isPowerMode) {
+if (isPowerMode) {
     ctx.fillStyle = colors[colorIndex];
-    enemies.forEach(enemy => {
-      drawEmojiPower(ctx, enemy);
+    enemies.forEach((enemy, index) => {
+      drawEmojiPower(ctx, enemy, index);
       emojiPowerBehavior(enemy);
     });
     checkEnemyCollision();
