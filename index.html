@@ -28,29 +28,11 @@ let colorIndex = 0;
 const colors = ['red', 'yellow', 'blue', 'white'];
 const emojiPoints = {'\ud83d\udc80': 100, '\ud83d\udc79': 200, '\ud83d\udc7b': 300, '\ud83d\udc7d': 150, '\ud83e\uddd4\u200d\u2640\ufe0f': 250, '\ud83d\udca9': 100};
 
-function pacmanPower() {
-  isPowerMode = true;
-  clearInterval(powerModeInterval); // Clear any existing interval
-  powerModeInterval = setInterval(() => {
-    colorIndex = (colorIndex + 1) % colors.length;
-  }, 500);
-
-  setTimeout(() => {
-    isPowerMode = false;
-    clearInterval(powerModeInterval); // Clear the interval when power mode ends
-    enemies.forEach(enemy => {
-      enemy.speed *= 2;
-    });
-  }, 15000);
-}
-
-
 function drawEmojiPower(ctx, enemy) {
   ctx.globalAlpha = Math.abs(Math.sin(Date.now() / 500)) * 0.85 + 0.15;
   ctx.drawImage(enemy.image, enemy.x, enemy.y, enemy.width, enemy.height);
   ctx.globalAlpha = 1.0; // Reset alpha
 }
-
 
 function emojiPowerBehavior(enemy) {
   if (isPowerMode) {
@@ -81,7 +63,7 @@ function checkEnemyCollision() {
   }
 }
 
-  function updateScore(isPowerPellet = false) {
+function updateScore(isPowerPellet = false) {
   score += isPowerPellet ? 100 : 1;
   scoreElement.textContent = 'Score: ' + score;
   if (isPowerPellet) {
@@ -363,13 +345,28 @@ function drawGameElements() {
 function drawPowerModeElements() {
   // Make Pac-Man and enemies blink
   ctx.globalAlpha = Math.abs(Math.sin(Date.now() / 500)) * 0.85 + 0.15;
-  ctx.fillStyle = '#FFFF00';
-  ctx.fillStyle = colors[colorIndex];
+  ctx.fillStyle = '#FFFF00';  // Explicitly set Pacman's color to yellow
   enemies.forEach(enemy => {
     drawEmojiPower(ctx, enemy);
     emojiPowerBehavior(enemy);
   });
   checkEnemyCollision();
+}
+
+function pacmanPower() {
+  isPowerMode = true;
+  clearInterval(powerModeInterval); // Clear any existing interval
+  powerModeInterval = setInterval(() => {
+    colorIndex = (colorIndex + 1) % colors.length;
+  }, 500);
+
+  setTimeout(() => {
+    isPowerMode = false;
+    clearInterval(powerModeInterval); // Clear the interval when power mode ends
+    enemies.forEach(enemy => {
+      enemy.speed *= 2;  // Reset enemy speed
+    });
+  }, 15000);
 }
 
 function drawNormalModeElements() {
