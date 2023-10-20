@@ -28,6 +28,14 @@ let colorIndex = 0;
 const colors = ['red', 'yellow', 'blue', 'white'];
 const emojiPoints = {'\ud83d\udc80': 100, '\ud83d\udc79': 200, '\ud83d\udc7b': 300, '\ud83d\udc7d': 150, '\ud83e\uddd4\u200d\u2640\ufe0f': 250, '\ud83d\udca9': 100};
 let cherry = null;
+
+  // Set a timer to spawn the cherry after 45 seconds
+setTimeout(() => {
+  cherry = {
+    x: 7 * cellSize + (cellSize / 2),
+    y: 12 * cellSize + (cellSize / 2)
+  };
+}, 45000);
   
 function pacmanPower() {
   isPowerMode = true;
