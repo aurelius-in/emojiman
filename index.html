@@ -45,12 +45,11 @@ function pacmanPower() {
 } // Missing closing brace added here
 
 function drawEmojiPower(ctx, enemy) {
-  if (isPowerMode) {
-    ctx.globalAlpha = 0.5 + 0.5 * Math.sin(Date.now() / 500);
-  }
-  drawEnemy(ctx, enemy);
-  ctx.globalAlpha = 1;
+  ctx.globalAlpha = Math.abs(Math.sin(Date.now() / 500)) * 0.85 + 0.15;
+  ctx.drawImage(enemy.image, enemy.x, enemy.y, enemy.width, enemy.height);
+  ctx.globalAlpha = 1.0; // Reset alpha
 }
+
 
 function emojiPowerBehavior(enemy) {
   if (isPowerMode) {
