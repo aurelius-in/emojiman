@@ -43,7 +43,7 @@
 
   </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 <div id="score" style="position: absolute; top: 10px; left: 10px; color: white; font-size: 30px; font-family: 'Press Start 2P', cursive;"></div>
 <canvas id="gameCanvas" width="964" height="1533"></canvas>
 <div id="joystick">
@@ -504,21 +504,25 @@ if (isPowerMode) {
   checkCherryCollision();
 }
 
-// Update the event listeners to use the correct variable name 'direction'
 document.getElementById('up').addEventListener('click', () => {
+  event.preventDefault();
   direction = 'up';
 });
 
 document.getElementById('down').addEventListener('click', () => {
+  event.preventDefault();
   direction = 'down';
 });
 
 document.getElementById('left').addEventListener('click', () => {
+  event.preventDefault();
   direction = 'left';
 });
 
 document.getElementById('right').addEventListener('click', () => {
+ event.preventDefault();
   direction = 'right';
+  
 });
 
 document.getElementById('up').addEventListener('touchstart', (event) => {
@@ -558,6 +562,23 @@ document.addEventListener('keydown', function(event) {
       break;
   }
 });
+  function goFullScreen() {
+  let elem = document.documentElement;
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.mozRequestFullScreen) {
+    elem.mozRequestFullScreen();
+  } else if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    elem.msRequestFullscreen();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  goFullScreen();
+});
+
 
 // Wrap the gameLoop() call in a try-catch block to catch any errors
 try {
