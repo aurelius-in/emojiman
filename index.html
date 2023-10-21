@@ -86,7 +86,7 @@ function pacmanPower() {
       enemy.speed *= 2;
     });
   }, 15000);
-} // Missing closing brace added here
+} 
 
 function drawEmojiPower(ctx, enemy, index) {
   if (isPowerMode) {
@@ -247,6 +247,7 @@ function spawnEnemy() {
   spawnY: spawnY,
   isInSpawn: true  // New flag
 };
+
 
   enemies.push(enemy);
   spawnedEnemies++;
