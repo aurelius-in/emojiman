@@ -144,18 +144,34 @@ function emojiPowerBehavior(enemy) {
 }
 
 function checkEnemyCollision() {
-  if (isPowerMode) {
-    enemies.forEach((enemy, index) => {
-      const dx = pacmanX - enemy.x;
-      const dy = pacmanY - enemy.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      if (distance < pacmanRadius * 2) {
+  enemies.forEach((enemy, index) => {
+    const dx = pacmanX - enemy.x;
+    const dy = pacmanY - enemy.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < pacmanRadius * 2) {
+      if (isPowerMode) {
         score += emojiPoints[enemy.emoji];
         enemies.splice(index, 1);
+      } else {
+        // Move Pac-Man to the center
+        pacmanX = 7 * cellSize + (cellSize / 2);
+        pacmanY = 12 * cellSize + (cellSize / 2);
+
+        // Reset enemies to their spawn points
+        enemies.forEach(enemy => {
+          enemy.x = enemy.spawnX;
+          enemy.y = enemy.spawnY;
+        });
+
+        // Decrease lives by 1
+        const livesElement = document.getElementById('lives');
+        const currentLives = livesElement.textContent.length;
+        livesElement.textContent = '😃'.repeat(currentLives - 1);
       }
-    });
-  }
+    }
+  });
 }
+
   
   let isPowerMode = false;
     const scoreElement = document.getElementById('score');
