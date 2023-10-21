@@ -324,3 +324,68 @@ function drawEnemy(enemy) {
       direction = dy > 0 ? 'down' : 'up';
     }
   });
+
+function checkCollision(x, y, radius, isEnemy = false) {
+    const corners = [
+      { x: x - radius, y: y - radius },
+      { x: x + radius, y: y - radius },
+      { x: x - radius, y: y + radius },
+      { x: x + radius, y: y + radius }
+    ];
+
+    return corners.some(corner => {
+      const gridX = Math.floor(corner.x / cellSize);
+      const gridY = Math.floor(corner.y / cellSize);
+      return maze[gridY][gridX] === '1' || (maze[gridY][gridX] === '2' && !isEnemy);
+    });
+  }
+
+  function drawMaze() {
+    for (let y = 0; y < maze.length; y++) {
+      for (let x = 0; x < maze[y].length; x++) {
+        const cell = maze[y][x];
+        const xPos = x * cellSize;
+        const yPos = y * cellSize;
+        if (cell === '1') {
+          ctx.fillStyle = '#0000FF';
+          ctx.fillRect(xPos, yPos, cellSize, cellSize);
+        } else if (cell === '2') {
+          ctx.fillStyle = '#808080';
+          ctx.fillRect(xPos, yPos, cellSize, cellSize);
+        } else if (cell === '3') {
+          ctx.fillStyle = '#FFFFFF';
+          ctx.beginPath();
+          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 5.5, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (cell === '4') {
+          ctx.fillStyle = '#FFFFFF';
+          ctx.beginPath();
+          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 11, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+  }
+
+  // Center Pac-Man when turning
+  function centerPacmanOnGrid() {
+    const gridX = Math.floor(pacmanX / cellSize);
+    const gridY = Math.floor(pacmanY / cellSize);
+
+    pacmanX = (gridX * cellSize) + cellSize / 2;
+    pacmanY = (gridY * cellSize) + cellSize / 2;
+  }
+
+function checkCherryCollision() {
+  if (cherry) {
+    const dx = pacmanX - cherry.x;
+    const dy = pacmanY - cherry.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < pacmanRadius * 2) {
+      score += 1000;
+      scoreElement.textContent = 'Score: ' + score;
+      cherry = null;
+    }
+  }
+}
+  
