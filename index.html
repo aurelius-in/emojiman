@@ -510,21 +510,26 @@ document.getElementById('right').addEventListener('click', () => {
   direction = 'right';
 });
 
-document.getElementById('up').addEventListener('touchstart', () => {
+document.getElementById('up').addEventListener('touchstart', (event) => {
+  event.preventDefault();
   direction = 'up';
 });
 
-document.getElementById('down').addEventListener('touchstart', () => {
+document.getElementById('down').addEventListener('touchstart', (event) => {
+  event.preventDefault();
   direction = 'down';
 });
 
-document.getElementById('left').addEventListener('touchstart', () => {
+document.getElementById('left').addEventListener('touchstart', (event) => {
+  event.preventDefault();
   direction = 'left';
 });
 
-document.getElementById('right').addEventListener('touchstart', () => {
+document.getElementById('right').addEventListener('touchstart', (event) => {
+  event.preventDefault();
   direction = 'right';
 });
+
 
 document.addEventListener('keydown', function(event) {
   switch (event.key) {
