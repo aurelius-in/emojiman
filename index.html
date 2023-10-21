@@ -77,6 +77,29 @@ setTimeout(() => {
     y: 12 * cellSize + (cellSize / 2)
   };
 }, 45000);
+
+let lives = 3; // New variable for lives
+const livesElement = document.createElement('div'); // New element for displaying lives
+
+// Initialize lives display
+livesElement.style.position = 'absolute';
+livesElement.style.top = '10px';
+livesElement.style.right = '10px';
+livesElement.style.color = 'white';
+livesElement.style.fontSize = '30px';
+livesElement.style.fontFamily = "'Press Start 2P', cursive";
+document.body.appendChild(livesElement);
+
+function updateLives() {
+  let livesStr = '';
+  for (let i = 0; i < lives; i++) {
+    livesStr += '😃';
+  }
+  livesElement.textContent = livesStr;
+}
+
+// Call this function to update lives display initially
+updateLives();
   
 function pacmanPower() {
   isPowerMode = true;
