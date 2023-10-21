@@ -156,8 +156,8 @@ function pacmanDeath() {
 
   // Decrease lives by 1
   const livesElement = document.getElementById('lives');
-  const currentLives = livesElement.textContent.length;
-  livesElement.textContent = '\ud83d\ude03'.repeat(currentLives - 1);
+  const currentLives = Array.from(livesElement.textContent).filter(char => char === '😃').length;
+  livesElement.textContent = '😃'.repeat(currentLives - 1);
 
   // Check if game is over
   if (currentLives - 1 === 0) {
@@ -182,13 +182,12 @@ function checkEnemyCollision() {
     }
   });
 }
-
   
   let isPowerMode = false;
     const scoreElement = document.getElementById('score');
   let score = 0;
 
-  function updateScore(isPowerPellet = false) {
+function updateScore(isPowerPellet = false) {
   score += isPowerPellet ? 100 : 1;
   scoreElement.textContent = 'Score: ' + score;
   if (isPowerPellet) {
@@ -376,7 +375,7 @@ function enemyBehavior(enemy) {
   enemy.lastY = enemy.y;
 }
 
-  function drawEnemy(enemy) {
+function drawEnemy(enemy) {
     ctx.font = `${pacmanRadius * 2.3}px Arial`;
     ctx.fillText(enemy.emoji, enemy.x - pacmanRadius, enemy.y + pacmanRadius);
   }
