@@ -1,5 +1,7 @@
 let powerModeInterval;
 let powerMode = false;
+let originalPacmanSpeed = 3.465; // Store the original speed
+let originalEnemySpeeds = []; // Store the original speeds of enemies
 let colorIndex = 0;
 const colors = ['red', 'yellow', 'blue', 'white'];
 const emojiPoints = {
@@ -46,7 +48,7 @@ updateLives();
 
 function pacmanPower() {
     isPowerMode = true;
-    pacmanSpeed *= 1.5; // Increase speed by 1.5 times
+    pacmanSpeed = originalPacmanSpeed * 1.5; // Use the original speed for calculation
     clearInterval(powerModeInterval);
     powerModeInterval = setInterval(() => {
         colorIndex = (colorIndex + 1) % colors.length;
@@ -55,9 +57,9 @@ function pacmanPower() {
     setTimeout(() => {
         isPowerMode = false;
         clearInterval(powerModeInterval);
-        pacmanSpeed /= 1.5; // Reset speed
-        enemies.forEach(enemy => {
-            enemy.speed *= 2;
+        pacmanSpeed = originalPacmanSpeed; // Reset to original speed
+        enemies.forEach((enemy, index) => {
+            enemy.speed = originalEnemySpeeds[index]; // Reset to original speed
         });
     }, 15000);
 }
