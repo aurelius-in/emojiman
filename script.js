@@ -388,4 +388,78 @@ function checkCherryCollision() {
     }
   }
 }
+
+function drawCherry() {
+  if (cherry) {
+    ctx.font = `${pacmanRadius * 2.3}px Arial`;
+    ctx.fillText('🍒', cherry.x - pacmanRadius, cherry.y + pacmanRadius);
+  }
+}
   
+function gameLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  drawMaze();
+
+if (isPowerMode) {
+    ctx.fillStyle = colors[colorIndex];
+    enemies.forEach((enemy, index) => {
+      drawEmojiPower(ctx, enemy, index);
+      emojiPowerBehavior(enemy);
+    });
+    checkEnemyCollision();
+  } else {
+    ctx.fillStyle = '#FFFF00';
+    enemies.forEach(enemy => {
+      drawEnemy(enemy);
+      enemyBehavior(enemy);
+    });
+  }
+
+  if (direction === 'up') angle = -Math.PI / 2;
+  if (direction === 'down') angle = Math.PI / 2;
+  if (direction === 'left') angle = Math.PI;
+  if (direction === 'right') angle = 0;
+
+  ctx.fillStyle = '#FFFF00';
+  ctx.beginPath();
+  ctx.moveTo(pacmanX, pacmanY);
+  ctx.arc(pacmanX, pacmanY, pacmanRadius, angle + mouthAngle, angle + Math.PI * 2 - mouthAngle);
+  ctx.lineTo(pacmanX, pacmanY);
+  ctx.fill();
+
+  let nextX = pacmanX;
+  let nextY = pacmanY;
+
+  if (direction === 'up') nextY -= pacmanSpeed;
+  if (direction === 'down') nextY += pacmanSpeed;
+  if (direction === 'left') nextX -= pacmanSpeed;
+  if (direction === 'right') nextX += pacmanSpeed;
+
+  // Logic to make Pac-Man reappear on the opposite side
+  const middleRowY = 12 * cellSize + (cellSize / 2); // Middle row Y-coordinate
+  if (Math.abs(pacmanY - middleRowY) < 1) {
+    if (nextX < 0) {
+      nextX = canvas.width;
+    } else if (nextX > canvas.width) {
+      nextX = 0;
+    }
+  }
+
+  if (!checkCollision(nextX, nextY, pacmanRadius)) {
+    pacmanX = nextX;
+    pacmanY = nextY;
+  } else {
+    centerPacmanOnGrid();
+  }
+
+  mouthAngle += mouthSpeed;
+  if (mouthAngle > Math.PI / 4 || mouthAngle < 0) {
+    mouthSpeed = -mouthSpeed;
+  }
+  
+  checkPelletCollision();
+  requestAnimationFrame(gameLoop);
+  drawCherry();
+  checkCherryCollision();
+}
