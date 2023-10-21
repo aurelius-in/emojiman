@@ -61,7 +61,6 @@ function pacmanPower() {
     }, 15000);
 }
 
-
 function drawEmojiPower(ctx, enemy, index) {
     if (isPowerMode) {
         ctx.globalAlpha = 0.5 + 0.5 * Math.sin(Date.now() / 500);
@@ -152,6 +151,7 @@ function resetGame() { // Logic to reset the game, including pellets and lives
     resetEnemies();
     pacman.x = canvas.width / 2;
     pacman.y = canvas.height / 2;
+    clearInterval(powerModeInterval);
 }
 
 let isPowerMode = false;
@@ -660,3 +660,4 @@ if (maze[nextGridY][nextGridX] !== '1' || currentTime>enemy.smarterTime
     } catch (error) {
         console.error("An error occurred in the game loop:", error);
     }
+  
