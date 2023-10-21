@@ -159,18 +159,62 @@ function emojiPowerBehavior(enemy) {
 }
 
 function checkEnemyCollision() {
-  if (isPowerMode) {
-    enemies.forEach((enemy, index) => {
-      const dx = pacmanX - enemy.x;
-      const dy = pacmanY - enemy.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      if (distance < pacmanRadius * 2) {
-        score += emojiPoints[enemy.emoji];
-        enemies.splice(index, 1);
+  for (let i = 0; i < enemies.length; i++) {
+    if (pacman.x < enemies[i].x + enemies[i].width &&
+        pacman.x + pacman.width > enemies[i].x &&
+        pacman.y < enemies[i].y + enemies[i].height &&
+        pacman.y + pacman.height > enemies[i].y) {
+          
+      if (powerMode) {
+        // Remove enemy
+        enemies.splice(i, 1);
+        score += 10;
+      } else {
+        // Pacman loses a life
+        lives--;
+        if (lives > 0) {
+          // Update lives display
+          let livesDisplay = "";
+          for (let j = 0; j < lives; j++) {
+            livesDisplay += "😃";
+          }
+          document.getElementById("lives").innerText = livesDisplay;
+
+          // Reset pacman and enemies position
+          pacman.x = canvas.width / 2;
+          pacman.y = canvas.height / 2;
+          resetEnemies();
+          
+          // Show 😩 emoji
+          ctx.font = "30px Arial";
+          ctx.fillText("😩", pacman.x, pacman.y);
+        } else {
+          // Game over, reset everything
+          resetGame();
+        }
       }
-    });
+    }
   }
 }
+
+function resetEnemies() {
+  // Logic to reset enemies' positions
+}
+
+function resetGame() {
+  // Logic to reset the game, including pellets and lives
+  lives = 3;
+  document.getElementById("lives").innerText = "😃😃😃";
+  resetPellets();
+  resetEnemies();
+  pacman.x = canvas.width / 2;
+  pacman.y = canvas.height / 2;
+}
+
+function resetPellets() {
+  // Logic to reset pellets
+}
+
   
   let isPowerMode = false;
     const scoreElement = document.getElementById('score');
