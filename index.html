@@ -316,7 +316,7 @@ function spawnEnemy() {
   } else {
     emojiIndex = [2, 3, 4][spawnedEnemies % 3];
   }
-  const enemy = {
+const enemy = {
   x: spawnX,
   y: spawnY,
   speed: 1 + Math.random(),
@@ -504,7 +504,6 @@ function checkCherryCollision() {
     }
   }
 }
-
   
 function drawCherry() {
   if (cherry) {
@@ -557,7 +556,7 @@ if (isPowerMode) {
   if (direction === 'right') nextX += pacmanSpeed;
 
   // Logic to make Pac-Man reappear on the opposite side
-  const middleRowY = 12 * cellSize + (cellSize / 2); // Middle row Y-coordinate
+const middleRowY = 12 * cellSize + (cellSize / 2); // Middle row Y-coordinate
   if (Math.abs(pacmanY - middleRowY) < 1) {
     if (nextX < 0) {
       nextX = canvas.width;
