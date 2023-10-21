@@ -76,8 +76,12 @@ function drawEmojiPower(ctx, enemy, index) {
     } ctx.globalAlpha = 1;
 }
 
-function emojiPowerBehavior(enemy) {
+// Initialize an array to store the original speeds of enemies
+let originalEnemySpeeds = [];
+
+function emojiPowerBehavior(enemy, index) {
     if (isPowerMode) {
+        originalEnemySpeeds[index] = enemy.speed; // Store the original speed
         enemy.speed /= 2;
         let dx = enemy.spawnX - enemy.x;
         let dy = enemy.spawnY - enemy.y;
@@ -85,20 +89,23 @@ function emojiPowerBehavior(enemy) {
             enemy.direction = dx > 0 ? 'right' : 'left';
         } else {
             enemy.direction = dy > 0 ? 'down' : 'up';
-        } enemy.isInSpawn = true;
+        }
+        enemy.isInSpawn = true;
     } else {
-        enemy.speed *= 2;
-        if (enemy.isInSpawn) { // Logic to make them leave the spawn area
+        enemy.speed = originalEnemySpeeds[index]; // Reset to original speed
+        if (enemy.isInSpawn) {
             let dx = pacmanX - enemy.x;
             let dy = pacmanY - enemy.y;
             if (Math.abs(dx) > Math.abs(dy)) {
                 enemy.direction = dx > 0 ? 'right' : 'left';
             } else {
                 enemy.direction = dy > 0 ? 'down' : 'up';
-            } enemy.isInSpawn = false; // Reset the flag
+            }
+            enemy.isInSpawn = false; // Reset the flag
         }
     }
 }
+
 
 function checkEnemyCollision() {
     for (let i = 0; i < enemies.length; i++) {
@@ -254,13 +261,11 @@ let spawnToggle = true;
 let spawnedEnemies = 0;
 
 function spawnEnemy() {
-    if (spawnedEnemies >= 6) 
-        return;
-     // Stop spawning after 6 enemies
+    if (spawnedEnemies >= 6) return; // Stop spawning after 6 enemies
 
     const spawnX = 7 * cellSize + cellSize / 2;
     const spawnY = spawnToggle ? 5 * cellSize + cellSize / 2 : 19 * cellSize + cellSize / 2;
-    const initialDirection = spawnToggle ? 'up' : 'down'; // Set initial direction based on womb room
+    const initialDirection = spawnToggle ? 'up' : 'down';
 
     let emojiIndex;
     if (spawnToggle) {
@@ -276,17 +281,17 @@ function spawnEnemy() {
         maxSpeed: 2 + Math.random(),
         state: 'center',
         lastMove: Date.now(),
-        direction: initialDirection, // Use the initial direction
-        hasLeftSpawn: false, // Missing comma added here
+        direction: initialDirection,
+        hasLeftSpawn: false,
         spawnX: spawnX,
         spawnY: spawnY,
-        isInSpawn: true // New flag
+        isInSpawn: true
     };
-
-
+    
+    originalEnemySpeeds.push(enemy.speed); // Store the original speed
     enemies.push(enemy);
     spawnedEnemies++;
-    spawnToggle = ! spawnToggle;
+    spawnToggle = !spawnToggle;
 }
 
 function enemyBehavior(enemy) {
