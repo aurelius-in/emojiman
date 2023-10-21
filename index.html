@@ -80,6 +80,7 @@ setTimeout(() => {
   
 function pacmanPower() {
   isPowerMode = true;
+  pacmanSpeed *= 1.5; // Increase speed by 1.5 times
   clearInterval(powerModeInterval);
   powerModeInterval = setInterval(() => {
     colorIndex = (colorIndex + 1) % colors.length;
@@ -88,11 +89,13 @@ function pacmanPower() {
   setTimeout(() => {
     isPowerMode = false;
     clearInterval(powerModeInterval);
+    pacmanSpeed /= 1.5; // Reset speed
     enemies.forEach(enemy => {
       enemy.speed *= 2;
     });
   }, 15000);
-} 
+}
+
 
 function drawEmojiPower(ctx, enemy, index) {
   if (isPowerMode) {
@@ -455,7 +458,10 @@ if (isPowerMode) {
       enemyBehavior(enemy);
     });
   }
+  const pacmanColor = isPowerMode ? 'white' : 'yellow';
+    ctx.fillStyle = pacmanColor;
 
+  
   if (direction === 'up') angle = -Math.PI / 2;
   if (direction === 'down') angle = Math.PI / 2;
   if (direction === 'left') angle = Math.PI;
