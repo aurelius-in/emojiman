@@ -186,3 +186,141 @@ const maze = [
   let spawnToggle = true;
 
  let spawnedEnemies = 0;
+
+function spawnEnemy() {
+  if (spawnedEnemies >= 6) return;  // Stop spawning after 6 enemies
+
+  const spawnX = 7 * cellSize + cellSize / 2;
+  const spawnY = spawnToggle ? 5 * cellSize + cellSize / 2 : 19 * cellSize + cellSize / 2;
+  const initialDirection = spawnToggle ? 'up' : 'down'; // Set initial direction based on womb room
+
+  let emojiIndex;
+  if (spawnToggle) {
+    emojiIndex = [0, 1, 5][spawnedEnemies % 3];
+  } else {
+    emojiIndex = [2, 3, 4][spawnedEnemies % 3];
+  }
+  const enemy = {
+  x: spawnX,
+  y: spawnY,
+  speed: 1 + Math.random(),
+  emoji: enemyEmojis[emojiIndex],
+  maxSpeed: 2 + Math.random(),
+  state: 'center',
+  lastMove: Date.now(),
+  direction: initialDirection, // Use the initial direction
+  hasLeftSpawn: false,  // Missing comma added here
+  spawnX: spawnX,
+  spawnY: spawnY,
+  isInSpawn: true  // New flag
+};
+
+
+  enemies.push(enemy);
+  spawnedEnemies++;
+  spawnToggle = !spawnToggle;
+}
+
+function enemyBehavior(enemy) {
+  const currentTime = Date.now();
+
+  if (!enemy.smarterTime) {
+    const emojiIndex = enemyEmojis.indexOf(enemy.emoji);
+    enemy.smarterTime = currentTime + (emojiIndex + 1 + 3) * 1000; // 1-based index + 3 seconds, converted to milliseconds
+  }
+
+  if (currentTime - enemy.lastMove < 500) return;
+
+  if (enemy.lastX === enemy.x && enemy.lastY === enemy.y && currentTime - enemy.lastMove > 1000) {
+    const possibleDirections = ['left', 'right'].filter(dir => {
+      let testX = enemy.x, testY = enemy.y;
+      if (dir === 'left') testX -= cellSize;
+      if (dir === 'right') testX += cellSize;
+      const testGridX = Math.floor(testX / cellSize);
+      const testGridY = Math.floor(testY / cellSize);
+      return maze[testGridY][testGridX] !== '1';
+    });
+    enemy.direction = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
+  }
+
+  let nextX = enemy.x;
+  let nextY = enemy.y;
+
+  if (enemy.direction === 'up') nextY -= cellSize;
+  if (enemy.direction === 'down') nextY += cellSize;
+  if (enemy.direction === 'left') nextX -= cellSize;
+  if (enemy.direction === 'right') nextX += cellSize;
+
+  const nextGridX = Math.floor(nextX / cellSize);
+  const nextGridY = Math.floor(nextY / cellSize);
+
+  if (!enemy.hasLeftSpawn && maze[nextGridY][nextGridX] === '2') {
+    enemy.direction = enemy.y < canvas.height / 2 ? 'up' : 'down';
+  }
+
+  if (enemy.hasLeftSpawn && maze[nextGridY][nextGridX] === '2') {
+    return;
+  }
+
+  if (maze[nextGridY][nextGridX] !== '1' || currentTime > enemy.smarterTime) {
+    enemy.x = nextX;
+    enemy.y = nextY;
+    enemy.lastMove = currentTime;
+    enemy.hasLeftSpawn = true;
+  }
+
+  let dx = pacmanX - enemy.x;
+  let dy = pacmanY - enemy.y;
+  let randomFactor = currentTime < enemy.smarterTime ? Math.random() < 0.2 : Math.random() < 0.1;
+
+  const possibleDirections = ['up', 'down', 'left', 'right'].filter(dir => {
+    let testX = enemy.x, testY = enemy.y;
+    if (dir === 'up') testY -= cellSize;
+    if (dir === 'down') testY += cellSize;
+    if (dir === 'left') testX -= cellSize;
+    if (dir === 'right') testX += cellSize;
+    const testGridX = Math.floor(testX / cellSize);
+    const testGridY = Math.floor(testY / cellSize);
+    return maze[testGridY][testGridX] !== '1';
+  });
+
+  if (currentTime > enemy.smarterTime || randomFactor || possibleDirections.length === 0) {
+    if (Math.abs(dx) > Math.abs(dy)) {
+      enemy.direction = dx > 0 ? 'right' : 'left';
+    } else {
+      enemy.direction = dy > 0 ? 'down' : 'up';
+    }
+    if (!possibleDirections.includes(enemy.direction)) {
+      enemy.direction = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
+    }
+  }
+
+  enemy.lastX = enemy.x;
+  enemy.lastY = enemy.y;
+}
+
+function drawEnemy(enemy) {
+    ctx.font = `${pacmanRadius * 2.3}px Arial`;
+    ctx.fillText(enemy.emoji, enemy.x - pacmanRadius, enemy.y + pacmanRadius);
+  }
+
+  setInterval(spawnEnemy, 3000);
+
+  canvas.addEventListener('touchstart', function(e) {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  });
+
+  canvas.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    const touchEndX = e.touches[0].clientX;
+    const touchEndY = e.touches[0].clientY;
+    const dx = touchEndX - touchStartX;
+    const dy = touchEndY - touchStartY;
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+      direction = dx > 0 ? 'right' : 'left';
+    } else {
+      direction = dy > 0 ? 'down' : 'up';
+    }
+  });
