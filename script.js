@@ -1,4 +1,5 @@
 let powerModeInterval;
+let powerMode = false;
 let colorIndex = 0;
 const colors = ['red', 'yellow', 'blue', 'white'];
 const emojiPoints = {
@@ -172,9 +173,11 @@ function checkPelletCollision() {
 
     if (maze[gridY][gridX] === '4') {
         maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
+
         updateScore(true);
         pacmanPower();
     }
+
     if (maze[gridY][gridX] === '3') {
         maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
         updateScore(false);
@@ -240,7 +243,7 @@ const powerEmojis = [
     '😱',
     '🤢',
     '🥶',
-    '😵‍💫'
+    '😵'
 ];
 
 const enemies = [];
@@ -496,7 +499,6 @@ if (maze[nextGridY][nextGridX] !== '1' || currentTime>enemy.smarterTime
             ctx.fillText('🍒', cherry.x - pacmanRadius, cherry.y + pacmanRadius);
         }
     }
-
     function gameLoop() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -660,4 +662,21 @@ if (maze[nextGridY][nextGridX] !== '1' || currentTime>enemy.smarterTime
     } catch (error) {
         console.error("An error occurred in the game loop:", error);
     }
-  
+
+// q: the game is crashing when pacman eats a power pellet
+// a: this is because the power pellet is not being removed from the maze array
+// q: remov the power pellet from the maze array
+// a: add the following code to the checkPelletCollision() function
+// maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
+// q: that code is already there
+// a: yes, but it's commented out
+// q: it's not
+// a: oh, you're right
+// q: the game is still crashing
+// a: that's because the powerMode variable is not defined
+// q: define the powerMode variable
+// a: add the following code to the top of the script.js file
+// let powerMode = false;
+
+
+
