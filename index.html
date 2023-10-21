@@ -476,6 +476,16 @@ if (isPowerMode) {
   if (direction === 'left') nextX -= pacmanSpeed;
   if (direction === 'right') nextX += pacmanSpeed;
 
+  // Logic to make Pac-Man reappear on the opposite side
+  const middleRowY = 12 * cellSize + (cellSize / 2); // Middle row Y-coordinate
+  if (Math.abs(pacmanY - middleRowY) < 1) {
+    if (nextX < 0) {
+      nextX = canvas.width;
+    } else if (nextX > canvas.width) {
+      nextX = 0;
+    }
+  }
+
   if (!checkCollision(nextX, nextY, pacmanRadius)) {
     pacmanX = nextX;
     pacmanY = nextY;
