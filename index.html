@@ -45,6 +45,7 @@
 </head>
 <body oncontextmenu="return false;">
 <div id="score" style="position: absolute; top: 10px; left: 10px; color: white; font-size: 30px; font-family: 'Press Start 2P', cursive;"></div>
+  <div id="lives">😃😃😃</div>
 <canvas id="gameCanvas" width="964" height="1533"></canvas>
 <div id="joystick">
   <div id="joystick-row1">
@@ -198,7 +199,18 @@ function checkEnemyCollision() {
 }
 
 function resetEnemies() {
-  // Logic to reset enemies' positions
+  // Assuming enemies is an array of enemy objects
+  enemies.forEach(enemy => {
+    enemy.x = Math.random() * canvas.width;
+    enemy.y = Math.random() * canvas.height;
+  });
+}
+
+function resetPellets() {
+  // Assuming pellets is an array of pellet objects
+  pellets.forEach(pellet => {
+    pellet.active = true; // Reactivate the pellet
+  });
 }
 
 function resetGame() {
@@ -211,11 +223,6 @@ function resetGame() {
   pacman.y = canvas.height / 2;
 }
 
-function resetPellets() {
-  // Logic to reset pellets
-}
-
-  
   let isPowerMode = false;
     const scoreElement = document.getElementById('score');
   let score = 0;
