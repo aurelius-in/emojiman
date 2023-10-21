@@ -463,3 +463,87 @@ if (isPowerMode) {
   drawCherry();
   checkCherryCollision();
 }
+
+
+
+document.getElementById('up').addEventListener('click', () => {
+  event.preventDefault();
+  direction = 'up';
+});
+
+document.getElementById('down').addEventListener('click', () => {
+  event.preventDefault();
+  direction = 'down';
+});
+
+document.getElementById('left').addEventListener('click', () => {
+  event.preventDefault();
+  direction = 'left';
+});
+
+document.getElementById('right').addEventListener('click', () => {
+ event.preventDefault();
+  direction = 'right';
+  
+});
+
+document.getElementById('up').addEventListener('touchstart', (event) => {
+  event.preventDefault();
+  direction = 'up';
+});
+
+document.getElementById('down').addEventListener('touchstart', (event) => {
+  event.preventDefault();
+  direction = 'down';
+});
+
+document.getElementById('left').addEventListener('touchstart', (event) => {
+  event.preventDefault();
+  direction = 'left';
+});
+
+document.getElementById('right').addEventListener('touchstart', (event) => {
+  event.preventDefault();
+  direction = 'right';
+});
+
+
+document.addEventListener('keydown', function(event) {
+  switch (event.key) {
+    case 'ArrowUp':
+      direction = 'up';
+      break;
+    case 'ArrowDown':
+      direction = 'down';
+      break;
+    case 'ArrowLeft':
+      direction = 'left';
+      break;
+    case 'ArrowRight':
+      direction = 'right';
+      break;
+  }
+});
+  function goFullScreen() {
+  let elem = document.documentElement;
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.mozRequestFullScreen) {
+    elem.mozRequestFullScreen();
+  } else if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    elem.msRequestFullscreen();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  goFullScreen();
+});
+
+// Wrap the gameLoop() call in a try-catch block to catch any errors
+try {
+  gameLoop();
+} catch (error) {
+  console.error("An error occurred in the game loop:", error);
+}
