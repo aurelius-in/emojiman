@@ -143,6 +143,30 @@ function emojiPowerBehavior(enemy) {
   }
 }
 
+function pacmanDeath() {
+  // Move Pac-Man to the center
+  pacmanX = 7 * cellSize + (cellSize / 2);
+  pacmanY = 12 * cellSize + (cellSize / 2);
+
+  // Reset enemies to their spawn points
+  enemies.forEach(enemy => {
+    enemy.x = enemy.spawnX;
+    enemy.y = enemy.spawnY;
+  });
+
+  // Decrease lives by 1
+  const livesElement = document.getElementById('lives');
+  const currentLives = livesElement.textContent.length;
+  livesElement.textContent = '\ud83d\ude03'.repeat(currentLives - 1);
+
+  // Check if game is over
+  if (currentLives - 1 === 0) {
+    // End the game and show a game over message
+    alert("Game Over!");
+    location.reload(); // Reload the page to restart the game
+  }
+}
+  
 function checkEnemyCollision() {
   enemies.forEach((enemy, index) => {
     const dx = pacmanX - enemy.x;
@@ -153,20 +177,7 @@ function checkEnemyCollision() {
         score += emojiPoints[enemy.emoji];
         enemies.splice(index, 1);
       } else {
-        // Move Pac-Man to the center
-        pacmanX = 7 * cellSize + (cellSize / 2);
-        pacmanY = 12 * cellSize + (cellSize / 2);
-
-        // Reset enemies to their spawn points
-        enemies.forEach(enemy => {
-          enemy.x = enemy.spawnX;
-          enemy.y = enemy.spawnY;
-        });
-
-        // Decrease lives by 1
-        const livesElement = document.getElementById('lives');
-        const currentLives = livesElement.textContent.length;
-        livesElement.textContent = '😃'.repeat(currentLives - 1);
+        pacmanDeath(); // Call the pacmanDeath function here
       }
     }
   });
@@ -185,7 +196,7 @@ function checkEnemyCollision() {
   }
 }
 
-  function checkPelletCollision() {
+function checkPelletCollision() {
   const gridX = Math.floor(pacmanX / cellSize);
   const gridY = Math.floor(pacmanY / cellSize);
 
@@ -454,7 +465,6 @@ function checkCherryCollision() {
     }
   }
 }
-
   
 function drawCherry() {
   if (cherry) {
