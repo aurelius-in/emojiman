@@ -459,32 +459,37 @@ function drawEnemy(enemy) {
     });
   }
 
-  function drawMaze() {
-    for (let y = 0; y < maze.length; y++) {
-      for (let x = 0; x < maze[y].length; x++) {
-        const cell = maze[y][x];
-        const xPos = x * cellSize;
-        const yPos = y * cellSize;
-        if (cell === '1') {
-          ctx.fillStyle = '#0000FF';
-          ctx.fillRect(xPos, yPos, cellSize, cellSize);
-        } else if (cell === '2') {
-          ctx.fillStyle = '#808080';
-          ctx.fillRect(xPos, yPos, cellSize, cellSize);
-        } else if (cell === '3') {
-          ctx.fillStyle = '#FFFFFF';
-          ctx.beginPath();
-          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 5.5, 0, Math.PI * 2);
-          ctx.fill();
-        } else if (cell === '4') {
-          ctx.fillStyle = '#FFFFFF';
-          ctx.beginPath();
-          ctx.arc(xPos + cellSize / 2, yPos + cellSize / 2, 11, 0, Math.PI * 2);
-          ctx.fill();
-        }
+function drawMaze(ctx) {
+  const cornerRadius = 10; // Set the radius for the rounded corners
+
+  // Loop through each cell in the maze grid
+  for (let row = 0; row < maze.length; row++) {
+    for (let col = 0; col < maze[0].length; col++) {
+      const cell = maze[row][col];
+      const x = col * cellSize;
+      const y = row * cellSize;
+
+      if (cell === 1) {
+        ctx.fillStyle = 'blue';
+        ctx.beginPath();
+        
+        // Draw rounded corners
+        ctx.moveTo(x + cornerRadius, y);
+        ctx.lineTo(x + cellSize - cornerRadius, y);
+        ctx.arc(x + cellSize - cornerRadius, y + cornerRadius, cornerRadius, 1.5 * Math.PI, 0);
+        ctx.lineTo(x + cellSize, y + cellSize - cornerRadius);
+        ctx.arc(x + cellSize - cornerRadius, y + cellSize - cornerRadius, cornerRadius, 0, 0.5 * Math.PI);
+        ctx.lineTo(x + cornerRadius, y + cellSize);
+        ctx.arc(x + cornerRadius, y + cellSize - cornerRadius, cornerRadius, 0.5 * Math.PI, Math.PI);
+        ctx.lineTo(x, y + cornerRadius);
+        ctx.arc(x + cornerRadius, y + cornerRadius, cornerRadius, Math.PI, 1.5 * Math.PI);
+        
+        ctx.closePath();
+        ctx.fill();
       }
     }
   }
+}
 
   // Center Pac-Man when turning
   function centerPacmanOnGrid() {
