@@ -66,7 +66,6 @@ function emojiPowerBehavior(enemy) {
   }
 }
 
-
 function pacmanDeath() {
   // Move Pac-Man to the center
   pacmanX = 7 * cellSize + (cellSize / 2);
@@ -325,7 +324,7 @@ function drawEnemy(enemy) {
     }
   });
 
-function checkCollision(x, y, radius, isEnemy = false) {
+  function checkCollision(x, y, radius, isEnemy = false) {
     const corners = [
       { x: x - radius, y: y - radius },
       { x: x + radius, y: y - radius },
@@ -388,7 +387,7 @@ function checkCherryCollision() {
     }
   }
 }
-
+  
 function drawCherry() {
   if (cherry) {
     ctx.font = `${pacmanRadius * 2.3}px Arial`;
@@ -464,8 +463,6 @@ if (isPowerMode) {
   checkCherryCollision();
 }
 
-
-
 document.getElementById('up').addEventListener('click', () => {
   event.preventDefault();
   direction = 'up';
@@ -540,6 +537,7 @@ document.addEventListener('keydown', function(event) {
 document.addEventListener('DOMContentLoaded', function() {
   goFullScreen();
 });
+
 
 // Wrap the gameLoop() call in a try-catch block to catch any errors
 try {
