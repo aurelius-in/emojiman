@@ -356,14 +356,13 @@ function checkPelletCollision() {
     updateScore(false);
   }
 
-  // Check if all pellets have been eaten
+  // Check if all pellets are eaten
   const allPelletsEaten = maze.every(row => !row.includes('3') && !row.includes('4'));
+
   if (allPelletsEaten) {
-    alert("You've won!");
-    location.reload(); // Reload the page to restart the game
+    resetMazeAndPellets();
   }
 }
-
 
 function spawnEnemy() {
   if (spawnedEnemies >= 6) return;  // Stop spawning after 6 enemies
