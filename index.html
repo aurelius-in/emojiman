@@ -75,12 +75,68 @@
 </div>
 
 <script>
-let powerModeInterval;
-let colorIndex = 0;
 const colors = ['red', 'yellow', 'blue', 'white'];
 const emojiPoints = {'\ud83d\udc80': 100, '\ud83d\udc79': 200, '\ud83d\udc7b': 300, '\ud83d\udc7d': 150, '\ud83e\uddd4\u200d\u2640\ufe0f': 250, '\ud83d\udca9': 100};
+const scoreElement = document.getElementById('score');
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+  const cellSize = 57.75;
+  const mazeRows = 25;
+  const maze = [
+    '111111111111111',
+    '143333333333341',
+    '131113111311131',
+    '131433333334131',
+    '111311121113111',
+    '133310000013331',
+    '131311111113131',
+    '131333333333131',
+    '131113111311131',
+    '133333333333331',
+    '111311131113111',
+    '133333333333331',
+    '031111000111130',
+    '133333333333331',
+    '111311131113111',
+    '133333333333331',
+    '131113111311131',
+    '131333333333131',
+    '131311111113131',
+    '133310000013331',
+    '111311121113111',
+    '131433333334131',
+    '131113111311131',
+    '143333333333341',
+    '111111111111111'
+  ];
+
+  const enemyEmojis = ['💀', '👹', '👻', '👽', '🤖', '💩'];
+  const powerEmojis = ['☠️', '🥺', '😱', '🤢', '🥶', '😵‍💫'];
+
+  const enemies = [];
+  let spawnToggle = true;
+
+  let spawnedEnemies = 0;
+  
+  let pacmanRadius = 23.1;
+  canvas.height = (mazeRows * cellSize) + 2 * pacmanRadius;
+  let pacmanX = 7 * cellSize + (cellSize / 2);
+  let pacmanY = 12 * cellSize + (cellSize / 2);
+  let pacmanSpeed = 3.465;
+  let angle = 0;
+  let direction = 'right';
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let mouthSpeed = 0.055;
+  let mouthAngle = 0;
+  let enemySpeedIncrement = 0.001;
 let cherry = null;
 let currentFruit = '🍒';
+let level = 1;
+let score = 0;
+let isPowerMode = false;
+let powerModeInterval;
+let colorIndex = 0;
 
   // Set a timer to spawn the cherry after 45 seconds
 setTimeout(() => {
@@ -196,10 +252,6 @@ function checkEnemyCollision() {
     }
   });
 }
-  
-  let isPowerMode = false;
-    const scoreElement = document.getElementById('score');
-  let score = 0;
 
 function updateScore(isPowerPellet = false) {
   score += isPowerPellet ? 100 : 1;
@@ -223,59 +275,6 @@ function checkPelletCollision() {
     updateScore(false);
   }
 }
-
-  const canvas = document.getElementById('gameCanvas');
-  const ctx = canvas.getContext('2d');
-  const cellSize = 57.75;
-  const mazeRows = 25;
-  let pacmanRadius = 23.1;
-  canvas.height = (mazeRows * cellSize) + 2 * pacmanRadius;
-  let pacmanX = 7 * cellSize + (cellSize / 2);
-  let pacmanY = 12 * cellSize + (cellSize / 2);
-  let pacmanSpeed = 3.465;
-  let angle = 0;
-  let direction = 'right';
-  let touchStartX = 0;
-  let touchStartY = 0;
-  let mouthSpeed = 0.055;
-  let mouthAngle = 0;
-  let enemySpeedIncrement = 0.001;
-
-const maze = [
-    '111111111111111',
-    '143333333333341',
-    '131113111311131',
-    '131433333334131',
-    '111311121113111',
-    '133310000013331',
-    '131311111113131',
-    '131333333333131',
-    '131113111311131',
-    '133333333333331',
-    '111311131113111',
-    '133333333333331',
-    '031111000111130',
-    '133333333333331',
-    '111311131113111',
-    '133333333333331',
-    '131113111311131',
-    '131333333333131',
-    '131311111113131',
-    '133310000013331',
-    '111311121113111',
-    '131433333334131',
-    '131113111311131',
-    '143333333333341',
-    '111111111111111'
-  ];
-
-  const enemyEmojis = ['💀', '👹', '👻', '👽', '🤖', '💩'];
-  const powerEmojis = ['☠️', '🥺', '😱', '🤢', '🥶', '😵‍💫'];
-
-  const enemies = [];
-  let spawnToggle = true;
-
- let spawnedEnemies = 0;
 
 function spawnEnemy() {
   if (spawnedEnemies >= 6) return;  // Stop spawning after 6 enemies
