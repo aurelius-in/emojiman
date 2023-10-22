@@ -460,6 +460,7 @@ function drawEnemy(enemy) {
   }
 
 function drawMaze() {
+  const cornerRadius = 10; // Set the corner radius for rounded corners
   for (let y = 0; y < maze.length; y++) {
     for (let x = 0; x < maze[y].length; x++) {
       const cell = maze[y][x];
@@ -467,7 +468,17 @@ function drawMaze() {
       const yPos = y * cellSize;
       if (cell === '1') {
         ctx.fillStyle = '#0000FF';  // Blue for walls
-        ctx.fillRect(xPos, yPos, cellSize, cellSize);
+        ctx.beginPath();
+        ctx.moveTo(xPos + cornerRadius, yPos);
+        ctx.lineTo(xPos + cellSize - cornerRadius, yPos);
+        ctx.arcTo(xPos + cellSize, yPos, xPos + cellSize, yPos + cornerRadius, cornerRadius);
+        ctx.lineTo(xPos + cellSize, yPos + cellSize - cornerRadius);
+        ctx.arcTo(xPos + cellSize, yPos + cellSize, xPos + cellSize - cornerRadius, yPos + cellSize, cornerRadius);
+        ctx.lineTo(xPos + cornerRadius, yPos + cellSize);
+        ctx.arcTo(xPos, yPos + cellSize, xPos, yPos + cellSize - cornerRadius, cornerRadius);
+        ctx.lineTo(xPos, yPos + cornerRadius);
+        ctx.arcTo(xPos, yPos, xPos + cornerRadius, yPos, cornerRadius);
+        ctx.fill();
       } else if (cell === '2') {
         ctx.fillStyle = '#808080';  // Gray for enemy spawn areas
         ctx.fillRect(xPos, yPos, cellSize, cellSize);
