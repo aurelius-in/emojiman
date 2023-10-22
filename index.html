@@ -545,11 +545,11 @@ if (isPowerMode) {
   if (mouthAngle > Math.PI / 4 || mouthAngle < 0) {
     mouthSpeed = -mouthSpeed;
   }
-  
   checkPelletCollision();
   requestAnimationFrame(gameLoop);
   drawCherry();
   checkCherryCollision();
+  checkForWin();
 }
 
 document.getElementById('up').addEventListener('click', () => {
