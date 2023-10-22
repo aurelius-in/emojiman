@@ -291,6 +291,26 @@ function updateScore(isPowerPellet = false) {
   }
 }
 
+  function checkAllPelletsEaten() {
+  // Check if all pellets are eaten
+  const allEaten = maze.every(row => !row.includes('3') && !row.includes('4'));
+  
+  if (allEaten) {
+    // Reset the maze to its initial state
+    resetMazeAndPellets();
+    
+    // Reset Pac-Man's position
+    pacmanX = 7 * cellSize + (cellSize / 2);
+    pacmanY = 12 * cellSize + (cellSize / 2);
+    
+    // Reset the enemies
+    enemies.forEach(enemy => {
+    enemy.x = enemy.spawnX;
+    enemy.y = enemy.spawnY;
+    });
+  }
+}
+
 function resetMazeAndPellets() {
   maze = [
       '111111111111111',
@@ -562,13 +582,26 @@ function drawCherry() {
     ctx.fillText('🍒', cherry.x - pacmanRadius, cherry.y + pacmanRadius);
   }
 }
+
+function goFullScreen() {
+  let elem = document.documentElement;
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.mozRequestFullScreen) {
+    elem.mozRequestFullScreen();
+  } else if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    elem.msRequestFullscreen();
+  }
+}
   
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   drawMaze();
 
-if (isPowerMode) {
+  if (isPowerMode) {
     ctx.fillStyle = colors[colorIndex];
     enemies.forEach((enemy, index) => {
       drawEmojiPower(ctx, enemy, index);
@@ -625,6 +658,7 @@ if (isPowerMode) {
     mouthSpeed = -mouthSpeed;
   }
   checkPelletCollision();
+  checkAllPelletsEaten();
   requestAnimationFrame(gameLoop);
   handleEnemyCollision();
   drawCherry();
@@ -673,7 +707,6 @@ document.getElementById('right').addEventListener('touchstart', (event) => {
   direction = 'right';
 });
 
-
 document.addEventListener('keydown', function(event) {
   switch (event.key) {
     case 'ArrowUp':
@@ -690,23 +723,10 @@ document.addEventListener('keydown', function(event) {
       break;
   }
 });
-function goFullScreen() {
-  let elem = document.documentElement;
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if (elem.mozRequestFullScreen) {
-    elem.mozRequestFullScreen();
-  } else if (elem.webkitRequestFullscreen) {
-    elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) {
-    elem.msRequestFullscreen();
-  }
-}
 
 document.addEventListener('DOMContentLoaded', function() {
   goFullScreen();
 });
-
 
 // Wrap the gameLoop() call in a try-catch block to catch any errors
 try {
