@@ -108,7 +108,9 @@ function pacmanPower() {
 
 // Function to check for win condition
 function checkForWin() {
+  console.log("Checking for win, pellets left: " + pellets.length); // Debugging line
   if (pellets.length === 0) {
+    console.log("Win condition met"); // Debugging line
     // Change the fruit for the next level
     currentFruit = currentFruit === '🍒' ? '🍌' : '🍒';
     
@@ -116,7 +118,7 @@ function checkForWin() {
     location.reload();
   }
 }
-  
+
 function drawEmojiPower(ctx, enemy, index) {
   if (isPowerMode) {
     ctx.globalAlpha = 0.5 + 0.5 * Math.sin(Date.now() / 500);
@@ -610,7 +612,7 @@ document.addEventListener('keydown', function(event) {
       break;
   }
 });
-  function goFullScreen() {
+function goFullScreen() {
   let elem = document.documentElement;
   if (elem.requestFullscreen) {
     elem.requestFullscreen();
