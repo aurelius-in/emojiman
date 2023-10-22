@@ -130,6 +130,7 @@ const ctx = canvas.getContext('2d');
   let mouthSpeed = 0.055;
   let mouthAngle = 0;
   let enemySpeedIncrement = 0.001;
+  
 let cherry = null;
 let currentFruit = '🍒';
 let level = 1;
@@ -359,12 +360,13 @@ function checkPelletCollision() {
   // Check if all pellets have been eaten
   const allPelletsEaten = maze.every(row => !row.includes('3') && !row.includes('4'));
   if (allPelletsEaten) {
-    alert("You've won!");
-    location.reload(); // Reload the page to restart the game
+    alert(`Level ${currentLevel} Complete!`);
+    currentLevel++;
+    currentFruit = '🍌';
+    resetMazeAndPellets(); // Assuming you have a function to reset the maze and pellets
   }
 }
-
-
+  
 function spawnEnemy() {
   if (spawnedEnemies >= 6) return;  // Stop spawning after 6 enemies
 
