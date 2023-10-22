@@ -162,6 +162,36 @@ function pacmanPower() {
   }, 15000);
 } 
 
+function handleEnemyCollision() {
+  // Detect collision with enemies
+  enemies.forEach((enemy, index) => {
+    const dx = pacmanX - enemy.x;
+    const dy = pacmanY - enemy.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < pacmanRadius * 2) {
+      // Pause the game for 1 second
+      clearInterval(gameInterval);
+      setTimeout(() => {
+        // Reset Pac-Man and enemy positions
+        pacmanX = 7 * cellSize + (cellSize / 2);
+        pacmanY = 12 * cellSize + (cellSize / 2);
+        enemies.forEach(enemy => {
+          enemy.x = enemy.spawnX;
+          enemy.y = enemy.spawnY;
+        });
+
+        // Update lives
+        const livesElement = document.getElementById('lives');
+        const currentLives = Array.from(livesElement.textContent).filter(char => char === '😃').length;
+        livesElement.textContent = '😃'.repeat(currentLives - 1);
+
+        // Resume the game
+        gameInterval = setInterval(mainGameLoop, 1000 / 60);
+      }, 1000);
+    }
+  });
+}
+
 // Function to check for win condition
 function checkForWin() {
   console.log("Checking for win, pellets left: " + pellets.length); // Debugging line
