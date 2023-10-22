@@ -291,26 +291,8 @@ function updateScore(isPowerPellet = false) {
   }
 }
 
-function checkPelletCollision() {
-  const gridX = Math.floor(pacmanX / cellSize);
-  const gridY = Math.floor(pacmanY / cellSize);
-
-  if (maze[gridY][gridX] === '4') {
-    maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
-    updateScore(true);
-    pacmanPower();
-  }
-  if (maze[gridY][gridX] === '3') {
-    maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
-    updateScore(false);
-  }
-
-  // Check if all pellets are eaten
-  const allPelletsEaten = maze.every(row => !row.includes('3') && !row.includes('4'));
-
-  if (allPelletsEaten) {
-    // Reset maze to initial state
-    maze = [
+function resetMazeAndPellets() {
+  maze = [
       '111111111111111',
     '143333333333341',
     '131113111311131',
@@ -337,6 +319,27 @@ function checkPelletCollision() {
     '143333333333341',
     '111111111111111'
   ];
+}
+
+function checkPelletCollision() {
+  const gridX = Math.floor(pacmanX / cellSize);
+  const gridY = Math.floor(pacmanY / cellSize);
+
+  if (maze[gridY][gridX] === '4') {
+    maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
+    updateScore(true);
+    pacmanPower();
+  }
+  if (maze[gridY][gridX] === '3') {
+    maze[gridY] = maze[gridY].substr(0, gridX) + '0' + maze[gridY].substr(gridX + 1);
+    updateScore(false);
+  }
+
+  // Check if all pellets are eaten
+  const allPelletsEaten = maze.every(row => !row.includes('3') && !row.includes('4'));
+
+  if (allPelletsEaten) {
+    resetMazeAndPellets();
   }
 }
 
