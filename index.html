@@ -73,16 +73,15 @@
     <button id="down" class="joystick-button">🔽</button>
   </div>
 </div>
-
-<script>
+  <script>
 const colors = ['red', 'yellow', 'blue', 'white'];
 const emojiPoints = {'\ud83d\udc80': 100, '\ud83d\udc79': 200, '\ud83d\udc7b': 300, '\ud83d\udc7d': 150, '\ud83e\uddd4\u200d\u2640\ufe0f': 250, '\ud83d\udca9': 100};
 const scoreElement = document.getElementById('score');
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
-  const cellSize = 57.75;
-  const mazeRows = 25;
-  const maze = [
+const cellSize = 57.75;
+const mazeRows = 25;
+const maze = [
     '111111111111111',
     '143333333333341',
     '131113111311131',
@@ -262,7 +261,7 @@ function pacmanDeath() {
   // Check if game is over
   if (currentLives - 1 === 0) {
     // End the game and show a game over message
-    alert("Game Over!");
+    alert("Level 1 Complete!");
     location.reload(); // Reload the page to restart the game
   }
 }
@@ -518,7 +517,7 @@ function drawEnemy(enemy) {
   }
 
 function drawMaze() {
-  const cornerRadius = 10; // Set the corner radius for rounded corners
+  const cornerRadius = 12; // Set the corner radius for rounded corners
   for (let y = 0; y < maze.length; y++) {
     for (let x = 0; x < maze[y].length; x++) {
       const cell = maze[y][x];
@@ -654,8 +653,8 @@ function gameLoop() {
     centerPacmanOnGrid();
   }
 
-  mouthAngle += mouthSpeed;
-  if (mouthAngle > Math.PI / 4 || mouthAngle < 0) {
+mouthAngle += mouthSpeed;
+if (mouthAngle > Math.PI / 4 || mouthAngle < 0) {
     mouthSpeed = -mouthSpeed;
   }
   checkPelletCollision();
