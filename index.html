@@ -583,7 +583,7 @@ function checkCherryCollision() {
 function drawCherry() {
   if (cherry) {
     ctx.font = `${pacmanRadius * 2.3}px Arial`;
-    ctx.fillText('🍒', cherry.x - pacmanRadius, cherry.y + pacmanRadius);
+    ctx.fillText(currentFruit, cherry.x - pacmanRadius, cherry.y + pacmanRadius);
   }
 }
 
