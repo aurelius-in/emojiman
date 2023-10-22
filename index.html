@@ -106,6 +106,17 @@ function pacmanPower() {
   }, 15000);
 } 
 
+// Function to check for win condition
+function checkForWin() {
+  if (pellets.length === 0) {
+    // Change the fruit for the next level
+    currentFruit = currentFruit === '🍒' ? '🍌' : '🍒';
+    
+    // Reload the page to restart the game
+    location.reload();
+  }
+}
+  
 function drawEmojiPower(ctx, enemy, index) {
   if (isPowerMode) {
     ctx.globalAlpha = 0.5 + 0.5 * Math.sin(Date.now() / 500);
