@@ -685,6 +685,31 @@ try {
 } catch (error) {
   console.error("An error occurred in the game loop:", error);
 }
+
+  // ... other code ...
+
+let winInterval;
+
+function checkWin() {
+  if (score === 100) {
+    clearInterval(winInterval);
+    winInterval = null;
+    alert("Level 1 Complete!");
+    startGame();
+  }
+}
+
+function startGame() {
+  if (!winInterval) {
+    winInterval = setInterval(function () {
+      draw();
+      movePacman();
+      checkWin();
+    }, 100);
+  }
+}
+  
+startGame();
   </script>
 </body>
 </html>
